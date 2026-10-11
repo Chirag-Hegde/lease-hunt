@@ -38,6 +38,7 @@ class Settings(BaseSettings):
     run_budget_tokens: int = 200_000
     fanout_concurrency: int = 5
     deep_analysis_interrupt_threshold: int = 8
+    agent_timeout_seconds: float = 90.0
 
     # Auth
     jwt_secret: str = "change-me-in-production"

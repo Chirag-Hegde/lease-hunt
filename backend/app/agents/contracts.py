@@ -72,7 +72,9 @@ class Place(BaseModel):
     lat: float | None = None
     lng: float | None = None
     weight: float = Field(1.0, ge=0.0, le=1.0)
-    modes: list[CommuteMode] = Field(default_factory=lambda: list[CommuteMode](("drive", "transit")))
+    modes: list[CommuteMode] = Field(
+        default_factory=lambda: list[CommuteMode](("drive", "transit"))
+    )
     arrival_time: str | None = "09:00"  # HH:MM, local
     tolerance_minutes: int = 30  # beyond this, the penalty curve steepens
 

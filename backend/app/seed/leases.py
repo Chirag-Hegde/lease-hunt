@@ -63,7 +63,7 @@ def _build_pdf(path: Path, title: str, rent: int, clause_keys: list[str]) -> Non
 
 def _locate_anchor(pdf_path: Path, anchor: str) -> tuple[int, tuple[float, float, float, float]]:
     """Find (1-indexed page, union bbox) of an anchor phrase in the PDF."""
-    with fitz.open(pdf_path) as doc:
+    with fitz.open(pdf_path) as doc:  # type: ignore[no-untyped-call]
         for page_index, page in enumerate(doc):
             rects = page.search_for(anchor)
             if rects:

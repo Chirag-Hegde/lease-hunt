@@ -1,0 +1,1291 @@
+{
+ "openapi": "3.1.0",
+ "info": {
+  "title": "LeaseLens API",
+  "description": "Multi-agent apartment & lease hunter.",
+  "version": "0.1.0"
+ },
+ "paths": {
+  "/api/health": {
+   "get": {
+    "tags": [
+     "health"
+    ],
+    "summary": "Health",
+    "operationId": "health_api_health_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HealthResponse"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/briefs/parse": {
+   "post": {
+    "tags": [
+     "briefs"
+    ],
+    "summary": "Parse Brief Preview",
+    "description": "Parse natural language into a SearchBrief without persisting (live\npreview in the brief builder).",
+    "operationId": "parse_brief_preview_api_briefs_parse_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BriefCreateRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SearchBriefInput"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/briefs": {
+   "post": {
+    "tags": [
+     "briefs"
+    ],
+    "summary": "Create Brief",
+    "operationId": "create_brief_api_briefs_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BriefCreateRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BriefResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/briefs/{brief_id}": {
+   "get": {
+    "tags": [
+     "briefs"
+    ],
+    "summary": "Get Brief",
+    "operationId": "get_brief_api_briefs__brief_id__get",
+    "parameters": [
+     {
+      "name": "brief_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Brief Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BriefResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/runs": {
+   "get": {
+    "tags": [
+     "runs"
+    ],
+    "summary": "List Runs",
+    "operationId": "list_runs_api_runs_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/RunSummary"
+         },
+         "type": "array",
+         "title": "Response List Runs Api Runs Get"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "runs"
+    ],
+    "summary": "Create Run",
+    "operationId": "create_run_api_runs_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RunCreateRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/RunCreateResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/runs/{run_id}": {
+   "get": {
+    "tags": [
+     "runs"
+    ],
+    "summary": "Get Run",
+    "operationId": "get_run_api_runs__run_id__get",
+    "parameters": [
+     {
+      "name": "run_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Run Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/RunDetail"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/runs/{run_id}/events": {
+   "get": {
+    "tags": [
+     "runs"
+    ],
+    "summary": "Stream Run Events",
+    "operationId": "stream_run_events_api_runs__run_id__events_get",
+    "parameters": [
+     {
+      "name": "run_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Run Id"
+      }
+     },
+     {
+      "name": "after",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "default": 0,
+       "title": "After"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/runs/{run_id}/resume": {
+   "post": {
+    "tags": [
+     "runs"
+    ],
+    "summary": "Resume Run",
+    "operationId": "resume_run_api_runs__run_id__resume_post",
+    "parameters": [
+     {
+      "name": "run_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Run Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ResumeRequest"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/RunSummary"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/listings/{listing_id}": {
+   "get": {
+    "tags": [
+     "listings"
+    ],
+    "summary": "Get Listing",
+    "operationId": "get_listing_api_listings__listing_id__get",
+    "parameters": [
+     {
+      "name": "listing_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Listing Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ListingDetail"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "BriefCreateRequest": {
+    "properties": {
+     "text": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Text"
+     },
+     "brief": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/SearchBriefInput"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "type": "object",
+    "title": "BriefCreateRequest"
+   },
+   "BriefResponse": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "raw_text": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Raw Text"
+     },
+     "data": {
+      "$ref": "#/components/schemas/SearchBriefInput"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "raw_text",
+     "data",
+     "created_at"
+    ],
+    "title": "BriefResponse"
+   },
+   "Fee": {
+    "properties": {
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "amount": {
+      "type": "number",
+      "title": "Amount"
+     },
+     "period": {
+      "type": "string",
+      "enum": [
+       "monthly",
+       "one_time"
+      ],
+      "title": "Period",
+      "default": "monthly"
+     },
+     "mandatory": {
+      "type": "boolean",
+      "title": "Mandatory",
+      "default": true
+     }
+    },
+    "type": "object",
+    "required": [
+     "name",
+     "amount"
+    ],
+    "title": "Fee"
+   },
+   "HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/ValidationError"
+      },
+      "type": "array",
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "title": "HTTPValidationError"
+   },
+   "HealthResponse": {
+    "properties": {
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "demo_mode": {
+      "type": "boolean",
+      "title": "Demo Mode"
+     },
+     "database": {
+      "type": "string",
+      "title": "Database"
+     }
+    },
+    "type": "object",
+    "required": [
+     "status",
+     "demo_mode",
+     "database"
+    ],
+    "title": "HealthResponse"
+   },
+   "ListingDetail": {
+    "properties": {
+     "listing": {
+      "$ref": "#/components/schemas/ListingModel"
+     },
+     "results": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Results"
+     },
+     "lease_ids": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Lease Ids"
+     }
+    },
+    "type": "object",
+    "required": [
+     "listing"
+    ],
+    "title": "ListingDetail"
+   },
+   "ListingModel": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "source": {
+      "type": "string",
+      "title": "Source"
+     },
+     "url": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Url"
+     },
+     "address": {
+      "type": "string",
+      "title": "Address"
+     },
+     "city": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "City"
+     },
+     "lat": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Lat"
+     },
+     "lng": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Lng"
+     },
+     "rent": {
+      "type": "integer",
+      "title": "Rent"
+     },
+     "deposit": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Deposit"
+     },
+     "fees": {
+      "items": {
+       "$ref": "#/components/schemas/Fee"
+      },
+      "type": "array",
+      "title": "Fees"
+     },
+     "beds": {
+      "type": "number",
+      "title": "Beds"
+     },
+     "baths": {
+      "type": "number",
+      "title": "Baths"
+     },
+     "sqft": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Sqft"
+     },
+     "amenities": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Amenities"
+     },
+     "photos": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Photos"
+     },
+     "available_date": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Available Date"
+     },
+     "landlord": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Landlord"
+     },
+     "building_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Building Name"
+     },
+     "raw_text": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Raw Text"
+     },
+     "listed_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Listed At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "source",
+     "address",
+     "rent",
+     "beds",
+     "baths"
+    ],
+    "title": "ListingModel"
+   },
+   "ListingWithResults": {
+    "properties": {
+     "listing": {
+      "$ref": "#/components/schemas/ListingModel"
+     },
+     "match_score": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Match Score"
+     },
+     "match_explanation": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Match Explanation"
+     },
+     "results": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Results"
+     }
+    },
+    "type": "object",
+    "required": [
+     "listing"
+    ],
+    "title": "ListingWithResults"
+   },
+   "Place": {
+    "properties": {
+     "label": {
+      "type": "string",
+      "title": "Label"
+     },
+     "address": {
+      "type": "string",
+      "title": "Address"
+     },
+     "lat": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Lat"
+     },
+     "lng": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Lng"
+     },
+     "weight": {
+      "type": "number",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Weight",
+      "default": 1.0
+     },
+     "modes": {
+      "items": {
+       "type": "string",
+       "enum": [
+        "drive",
+        "transit",
+        "bike",
+        "walk"
+       ]
+      },
+      "type": "array",
+      "title": "Modes"
+     },
+     "arrival_time": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Arrival Time",
+      "default": "09:00"
+     },
+     "tolerance_minutes": {
+      "type": "integer",
+      "title": "Tolerance Minutes",
+      "default": 30
+     }
+    },
+    "type": "object",
+    "required": [
+     "label",
+     "address"
+    ],
+    "title": "Place"
+   },
+   "ResumeRequest": {
+    "properties": {
+     "approve": {
+      "type": "boolean",
+      "title": "Approve",
+      "default": true
+     },
+     "max_listings": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 50.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Max Listings"
+     }
+    },
+    "type": "object",
+    "title": "ResumeRequest"
+   },
+   "RunCreateRequest": {
+    "properties": {
+     "brief_id": {
+      "type": "string",
+      "title": "Brief Id"
+     }
+    },
+    "type": "object",
+    "required": [
+     "brief_id"
+    ],
+    "title": "RunCreateRequest"
+   },
+   "RunCreateResponse": {
+    "properties": {
+     "run_id": {
+      "type": "string",
+      "title": "Run Id"
+     }
+    },
+    "type": "object",
+    "required": [
+     "run_id"
+    ],
+    "title": "RunCreateResponse"
+   },
+   "RunDetail": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "brief_id": {
+      "type": "string",
+      "title": "Brief Id"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "interrupt": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Interrupt"
+     },
+     "cost_usd": {
+      "type": "number",
+      "title": "Cost Usd"
+     },
+     "tokens_in": {
+      "type": "integer",
+      "title": "Tokens In"
+     },
+     "tokens_out": {
+      "type": "integer",
+      "title": "Tokens Out"
+     },
+     "cache_hits": {
+      "type": "integer",
+      "title": "Cache Hits"
+     },
+     "cache_misses": {
+      "type": "integer",
+      "title": "Cache Misses"
+     },
+     "critic_rejections": {
+      "type": "integer",
+      "title": "Critic Rejections"
+     },
+     "started_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Started At"
+     },
+     "finished_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Finished At"
+     },
+     "error": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Error"
+     },
+     "report": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Report"
+     },
+     "listings": {
+      "additionalProperties": {
+       "$ref": "#/components/schemas/ListingWithResults"
+      },
+      "type": "object",
+      "title": "Listings"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "brief_id",
+     "status",
+     "interrupt",
+     "cost_usd",
+     "tokens_in",
+     "tokens_out",
+     "cache_hits",
+     "cache_misses",
+     "critic_rejections",
+     "started_at",
+     "finished_at",
+     "error",
+     "report"
+    ],
+    "title": "RunDetail"
+   },
+   "RunSummary": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "brief_id": {
+      "type": "string",
+      "title": "Brief Id"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "interrupt": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Interrupt"
+     },
+     "cost_usd": {
+      "type": "number",
+      "title": "Cost Usd"
+     },
+     "tokens_in": {
+      "type": "integer",
+      "title": "Tokens In"
+     },
+     "tokens_out": {
+      "type": "integer",
+      "title": "Tokens Out"
+     },
+     "cache_hits": {
+      "type": "integer",
+      "title": "Cache Hits"
+     },
+     "cache_misses": {
+      "type": "integer",
+      "title": "Cache Misses"
+     },
+     "critic_rejections": {
+      "type": "integer",
+      "title": "Critic Rejections"
+     },
+     "started_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Started At"
+     },
+     "finished_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Finished At"
+     },
+     "error": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Error"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "brief_id",
+     "status",
+     "interrupt",
+     "cost_usd",
+     "tokens_in",
+     "tokens_out",
+     "cache_hits",
+     "cache_misses",
+     "critic_rejections",
+     "started_at",
+     "finished_at",
+     "error"
+    ],
+    "title": "RunSummary"
+   },
+   "SearchBriefInput": {
+    "properties": {
+     "budget_min": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Budget Min"
+     },
+     "budget_max": {
+      "type": "integer",
+      "title": "Budget Max"
+     },
+     "beds": {
+      "type": "number",
+      "title": "Beds",
+      "default": 1
+     },
+     "baths": {
+      "type": "number",
+      "title": "Baths",
+      "default": 1
+     },
+     "move_in_earliest": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Move In Earliest"
+     },
+     "move_in_latest": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Move In Latest"
+     },
+     "lease_months": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Lease Months",
+      "default": 12
+     },
+     "pets": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Pets"
+     },
+     "parking_required": {
+      "type": "boolean",
+      "title": "Parking Required",
+      "default": false
+     },
+     "in_unit_laundry_required": {
+      "type": "boolean",
+      "title": "In Unit Laundry Required",
+      "default": false
+     },
+     "must_haves": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Must Haves"
+     },
+     "nice_to_haves": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Nice To Haves"
+     },
+     "deal_breakers": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Deal Breakers"
+     },
+     "cities": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Cities"
+     },
+     "important_places": {
+      "items": {
+       "$ref": "#/components/schemas/Place"
+      },
+      "type": "array",
+      "title": "Important Places"
+     },
+     "max_listings": {
+      "type": "integer",
+      "title": "Max Listings",
+      "default": 20
+     }
+    },
+    "type": "object",
+    "required": [
+     "budget_max"
+    ],
+    "title": "SearchBriefInput"
+   },
+   "ValidationError": {
+    "properties": {
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "type": "array",
+      "title": "Location"
+     },
+     "msg": {
+      "type": "string",
+      "title": "Message"
+     },
+     "type": {
+      "type": "string",
+      "title": "Error Type"
+     },
+     "input": {
+      "title": "Input"
+     },
+     "ctx": {
+      "type": "object",
+      "title": "Context"
+     }
+    },
+    "type": "object",
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError"
+   }
+  }
+ }
+}
