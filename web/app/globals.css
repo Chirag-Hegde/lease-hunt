@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* LeaseLens design tokens — calm, editorial, trustworthy.
+   Palette from the spec: warm off-white, deep teal primary, amber accent. */
+@layer base {
+  :root {
+    --background: 36 33% 97%; /* #FAF8F5 */
+    --foreground: 240 7% 11%; /* #1B1B1F */
+    --card: 0 0% 100%;
+    --card-foreground: 240 7% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 7% 11%;
+    --primary: 175 77% 26%; /* #0F766E deep teal */
+    --primary-foreground: 166 76% 97%;
+    --secondary: 36 20% 92%;
+    --secondary-foreground: 240 7% 11%;
+    --muted: 36 20% 93%;
+    --muted-foreground: 240 4% 42%;
+    --accent: 29 94% 44%; /* #D97706 amber */
+    --accent-foreground: 36 100% 97%;
+    --destructive: 347 77% 50%; /* #E11D48 rose */
+    --destructive-foreground: 0 0% 100%;
+    --border: 36 12% 86%;
+    --input: 36 12% 86%;
+    --ring: 175 77% 26%;
+    --severity-info: 215 16% 47%; /* slate */
+    --severity-caution: 29 94% 44%; /* amber */
+    --severity-high: 347 77% 50%; /* rose */
+  }
+
+  .dark {
+    --background: 228 8% 7%; /* #111214 */
+    --foreground: 240 7% 93%; /* #ECECEF */
+    --card: 228 7% 11%;
+    --card-foreground: 240 7% 93%;
+    --popover: 228 7% 11%;
+    --popover-foreground: 240 7% 93%;
+    --primary: 172 66% 40%;
+    --primary-foreground: 228 8% 7%;
+    --secondary: 228 6% 16%;
+    --secondary-foreground: 240 7% 93%;
+    --muted: 228 6% 15%;
+    --muted-foreground: 240 5% 62%;
+    --accent: 32 95% 54%;
+    --accent-foreground: 228 8% 7%;
+    --destructive: 347 77% 58%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 228 6% 19%;
+    --input: 228 6% 19%;
+    --ring: 172 66% 40%;
+    --severity-info: 215 16% 57%;
+    --severity-caution: 32 95% 54%;
+    --severity-high: 347 77% 58%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-serif tracking-tight;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  .skeleton {
+    @apply relative overflow-hidden rounded-md bg-muted;
+  }
+  .skeleton::after {
+    @apply absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/40 to-transparent content-[''];
+  }
+  .dark .skeleton::after {
+    @apply via-white/10;
+  }
+}
