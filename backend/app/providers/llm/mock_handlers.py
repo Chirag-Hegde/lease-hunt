@@ -295,3 +295,65 @@ def judge_claim_support(context: dict[str, Any]) -> BaseModel:
             action="downgraded", reason="only one excerpt supports a 'recurring' claim"
         )
     return ClaimVerdict(action="rejected", reason="no excerpt mentions the claimed issue")
+
+
+@register_mock("negotiation_draft")
+def draft_negotiation_email(context: dict[str, Any]) -> BaseModel:
+    """Template-based tone variants assembled strictly from provided leverage."""
+    from app.agents.negotiator import DraftText
+
+    tone = str(context.get("tone", "friendly"))
+    length = str(context.get("length", "standard"))
+    listing = context.get("listing", {}) or {}
+    address = str(listing.get("address", "the unit"))
+    rent = listing.get("rent", 0)
+    leverage = [str(x) for x in context.get("leverage", [])]
+    asks = [str(x) for x in context.get("asks", [])]
+
+    short_address = address.split(",")[0]
+    if tone == "friendly":
+        subject = f"Excited about {short_address} — a question on terms"
+        opener = (
+            f"Hi there,\n\nI toured {short_address} and genuinely love it — "
+            "it checks nearly every box for me, and I'm ready to move quickly."
+        )
+        case_intro = "A couple of things I noticed while doing my homework:"
+        closer = (
+            "I'd love to make this work and can sign as soon as we align on terms. "
+            "Would any of the above be possible?\n\nWarmly,\n[Your name]"
+        )
+    elif tone == "firm":
+        subject = f"Application for {short_address} — terms to finalize"
+        opener = (
+            f"Hello,\n\nI'm prepared to submit my application for {short_address} "
+            f"at the listed ${rent:,}/mo, pending agreement on the terms below."
+        )
+        case_intro = "The basis for these requests:"
+        closer = (
+            "If we can agree on these points, I can sign within 48 hours. "
+            "Please let me know by end of week.\n\nRegards,\n[Your name]"
+        )
+    else:  # data-driven
+        subject = f"{short_address}: proposal based on current comps"
+        opener = (
+            f"Hello,\n\nI'm very interested in {short_address}. Before applying, "
+            "I compared it against currently listed comparable units."
+        )
+        case_intro = "What the data shows:"
+        closer = (
+            "Based on the above, I believe the requests below are market-fair. "
+            "Happy to share my sources.\n\nBest,\n[Your name]"
+        )
+
+    max_leverage = {"short": 2, "standard": 4, "long": 8}.get(length, 4)
+    parts = [opener]
+    if leverage and leverage[0] != "(none selected)":
+        parts.append(case_intro)
+        parts.append("\n".join(f"• {item}" for item in leverage[:max_leverage]))
+    if asks and asks[0] != "(none)":
+        parts.append("What I'm asking:")
+        parts.append("\n".join(f"• {a}" for a in asks[:max_leverage]))
+    else:
+        parts.append("Is there any flexibility on the monthly rent or move-in terms?")
+    parts.append(closer)
+    return DraftText(subject=subject, body="\n\n".join(parts))
