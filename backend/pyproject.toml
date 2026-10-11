@@ -25,6 +25,7 @@ dependencies = [
     "reportlab>=4.2",
     "numpy>=2.0",
     "pyjwt>=2.9",
+    "email-validator>=2.0",
     "python-multipart>=0.0.12",
     "tenacity>=9.0",
     "pyyaml>=6.0",

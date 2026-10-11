@@ -29,6 +29,7 @@ export default function ResultsExplorerPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showIsochrone, setShowIsochrone] = useState(true);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
+  const [compareIds, setCompareIds] = useState<string[]>([]);
   const [minBeds, setMinBeds] = useState(0);
   const [maxCommute, setMaxCommute] = useState<number | null>(null);
   const [hideHighRisk, setHideHighRisk] = useState(false);
@@ -240,7 +241,26 @@ export default function ResultsExplorerPage() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.25 }}
+                className="relative"
               >
+                <label
+                  className="absolute right-3 top-3 z-10 flex cursor-pointer items-center gap-1 rounded-md bg-card/80 px-1.5 py-0.5 text-[11px] text-muted-foreground backdrop-blur"
+                  title="Select for comparison"
+                >
+                  <input
+                    type="checkbox"
+                    className="accent-[hsl(var(--primary))]"
+                    checked={compareIds.includes(entry.listing_id)}
+                    onChange={(e) =>
+                      setCompareIds((prev) =>
+                        e.target.checked
+                          ? [...prev, entry.listing_id].slice(-4)
+                          : prev.filter((id) => id !== entry.listing_id),
+                      )
+                    }
+                  />
+                  compare
+                </label>
                 <ListingCard
                   entry={entry.detail!}
                   score={entry.score}
@@ -253,6 +273,14 @@ export default function ResultsExplorerPage() {
               </motion.div>
             ))}
           </AnimatePresence>
+          {compareIds.length >= 2 && (
+            <Link
+              href={`/compare?ids=${compareIds.join(",")}`}
+              className="fixed bottom-6 right-6 z-20 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground shadow-lifted"
+            >
+              Compare {compareIds.length} listings →
+            </Link>
+          )}
         </div>
       </div>
     </div>

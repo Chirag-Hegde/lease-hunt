@@ -145,6 +145,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/runs/{run_id}/trace": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Run Trace */
+        get: operations["get_run_trace_api_runs__run_id__trace_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/listings/{listing_id}": {
         parameters: {
             query?: never;
@@ -162,10 +179,205 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/leases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Leases */
+        get: operations["list_leases_api_leases_get"];
+        put?: never;
+        /** Upload Lease */
+        post: operations["upload_lease_api_leases_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/leases/samples": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Samples */
+        get: operations["list_samples_api_leases_samples_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/leases/samples/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Analyze Sample */
+        post: operations["analyze_sample_api_leases_samples__key__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/leases/{lease_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Lease */
+        get: operations["get_lease_api_leases__lease_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Lease */
+        delete: operations["delete_lease_api_leases__lease_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/leases/{lease_id}/file": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Lease File */
+        get: operations["get_lease_file_api_leases__lease_id__file_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/negotiations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Negotiation */
+        post: operations["create_negotiation_api_negotiations_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/magic-link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Request Magic Link
+         * @description Demo mode returns the session token directly (no mail service);
+         *     production would email a one-time link instead.
+         */
+        post: operations["request_magic_link_api_auth_magic_link_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Me */
+        get: operations["me_api_auth_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/compare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Compare */
+        get: operations["compare_api_compare_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read Settings */
+        get: operations["read_settings_api_settings_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update Settings
+         * @description Runtime-adjustable knobs (apply to new runs; process-local).
+         */
+        patch: operations["update_settings_api_settings_patch"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** Ask */
+        Ask: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "rent_reduction" | "waived_fee" | "free_parking" | "lease_term" | "move_in_date" | "clause_redline";
+            /** Text */
+            text: string;
+        };
+        /** Body_upload_lease_api_leases_post */
+        Body_upload_lease_api_leases_post: {
+            /** File */
+            file: string;
+        };
         /** BriefCreateRequest */
         BriefCreateRequest: {
             /** Text */
@@ -184,6 +396,20 @@ export interface components {
              * Format: date-time
              */
             created_at: string;
+        };
+        /** CompareResponse */
+        CompareResponse: {
+            /** Listings */
+            listings?: components["schemas"]["ListingWithResults"][];
+        };
+        /** EvidenceDetail */
+        EvidenceDetail: {
+            /** Excerpt */
+            excerpt: string | null;
+            /** Source Url */
+            source_url: string | null;
+            /** Source Type */
+            source_type: string;
         };
         /** Fee */
         Fee: {
@@ -216,6 +442,125 @@ export interface components {
             demo_mode: boolean;
             /** Database */
             database: string;
+        };
+        /** JurisdictionNote */
+        JurisdictionNote: {
+            /** Rule Id */
+            rule_id: string;
+            /** Text */
+            text: string;
+            /** Source Url */
+            source_url?: string | null;
+            /**
+             * Verified
+             * @default false
+             */
+            verified: boolean;
+        };
+        /** LeaseAnalysis */
+        LeaseAnalysis: {
+            /** Lease Id */
+            lease_id: string;
+            /** Risk Score */
+            risk_score: number;
+            /** Findings */
+            findings: components["schemas"]["LeaseFindingModel"][];
+            /** Page Count */
+            page_count: number;
+            /**
+             * Ocr Used
+             * @default false
+             */
+            ocr_used: boolean;
+            /** Questions For Landlord */
+            questions_for_landlord?: string[];
+            /**
+             * Disclaimer
+             * @default Not legal advice. Verify with a local tenant rights organization or attorney.
+             */
+            disclaimer: string;
+        };
+        /** LeaseCitation */
+        LeaseCitation: {
+            /** Page */
+            page: number;
+            /** Bbox */
+            bbox: [
+                number,
+                number,
+                number,
+                number
+            ];
+            /** Quote */
+            quote: string;
+        };
+        /** LeaseFindingModel */
+        LeaseFindingModel: {
+            /** Id */
+            id?: string;
+            /**
+             * Clause Type
+             * @enum {string}
+             */
+            clause_type: "security_deposit" | "nonrefundable_fees" | "early_termination" | "auto_renewal" | "rent_increase" | "late_fees" | "maintenance_responsibility" | "landlord_entry" | "subletting" | "guest_limits" | "pets" | "utilities" | "parking" | "renters_insurance" | "joint_several_liability" | "liability_waiver" | "attorneys_fees" | "arbitration" | "mold_pest_disclosure" | "moveout_charges" | "as_is" | "other";
+            /**
+             * Severity
+             * @enum {string}
+             */
+            severity: "info" | "caution" | "high";
+            /** Explanation */
+            explanation: string;
+            /** Why It Matters */
+            why_it_matters: string;
+            /** Suggested Ask */
+            suggested_ask?: string | null;
+            citation: components["schemas"]["LeaseCitation"];
+            jurisdiction_note?: components["schemas"]["JurisdictionNote"] | null;
+            /** Confidence */
+            confidence: number;
+        };
+        /** LeaseResponse */
+        LeaseResponse: {
+            /** Id */
+            id: string;
+            /** Filename */
+            filename: string;
+            /** Listing Id */
+            listing_id: string | null;
+            /** Status */
+            status: string;
+            /** Page Count */
+            page_count: number | null;
+            /** Ocr Used */
+            ocr_used: boolean;
+            /** Risk Score */
+            risk_score: number | null;
+            /** Summary */
+            summary: {
+                [key: string]: unknown;
+            } | null;
+            /** Error */
+            error: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            analysis?: components["schemas"]["LeaseAnalysis"] | null;
+        };
+        /** LeveragePoint */
+        LeveragePoint: {
+            /** Id */
+            id?: string;
+            /** Text */
+            text: string;
+            /** Evidence Ids */
+            evidence_ids: string[];
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "price" | "reputation" | "lease" | "market" | "timing";
         };
         /** ListingDetail */
         ListingDetail: {
@@ -280,6 +625,76 @@ export interface components {
             /** Results */
             results?: {
                 [key: string]: unknown;
+            };
+        };
+        /** MagicLinkRequest */
+        MagicLinkRequest: {
+            /**
+             * Email
+             * Format: email
+             */
+            email: string;
+        };
+        /** MagicLinkResponse */
+        MagicLinkResponse: {
+            /** Message */
+            message: string;
+            /** Token */
+            token?: string | null;
+        };
+        /** MeResponse */
+        MeResponse: {
+            /** Email */
+            email: string;
+            /** User Id */
+            user_id: string;
+        };
+        /** NegotiationBundle */
+        NegotiationBundle: {
+            /** Listing Id */
+            listing_id: string;
+            /** Drafts */
+            drafts: components["schemas"]["NegotiationDraft"][];
+        };
+        /** NegotiationDraft */
+        NegotiationDraft: {
+            /**
+             * Tone
+             * @enum {string}
+             */
+            tone: "friendly" | "firm" | "data-driven";
+            /** Subject */
+            subject: string;
+            /** Body */
+            body: string;
+            /** Leverage Points */
+            leverage_points: components["schemas"]["LeveragePoint"][];
+            /** Asks */
+            asks: components["schemas"]["Ask"][];
+        };
+        /** NegotiationRequest */
+        NegotiationRequest: {
+            /** Listing Id */
+            listing_id: string;
+            /** Lease Id */
+            lease_id?: string | null;
+            /** Selected Leverage Ids */
+            selected_leverage_ids?: string[] | null;
+            /**
+             * Length
+             * @default standard
+             * @enum {string}
+             */
+            length: "short" | "standard" | "long";
+        };
+        /** NegotiationResponse */
+        NegotiationResponse: {
+            bundle: components["schemas"]["NegotiationBundle"];
+            /** All Leverage Points */
+            all_leverage_points: components["schemas"]["LeveragePoint"][];
+            /** Evidence */
+            evidence?: {
+                [key: string]: components["schemas"]["EvidenceDetail"];
             };
         };
         /** Place */
@@ -406,6 +821,20 @@ export interface components {
             /** Error */
             error: string | null;
         };
+        /** SampleLease */
+        SampleLease: {
+            /** Key */
+            key: string;
+            /** Title */
+            title: string;
+            /** Building Key */
+            building_key: string;
+        };
+        /** SampleList */
+        SampleList: {
+            /** Samples */
+            samples?: components["schemas"]["SampleLease"][];
+        };
         /** SearchBriefInput */
         SearchBriefInput: {
             /** Budget Min */
@@ -458,6 +887,107 @@ export interface components {
              * @default 20
              */
             max_listings: number;
+        };
+        /** SettingsResponse */
+        SettingsResponse: {
+            /** Demo Mode */
+            demo_mode: boolean;
+            /** Llm Provider */
+            llm_provider: string;
+            /** Run Budget Usd */
+            run_budget_usd: number;
+            /** Run Budget Tokens */
+            run_budget_tokens: number;
+            /** Fanout Concurrency */
+            fanout_concurrency: number;
+            /** Lease Retention Days */
+            lease_retention_days: number;
+            /** Keys */
+            keys: {
+                [key: string]: boolean;
+            };
+        };
+        /** SettingsUpdate */
+        SettingsUpdate: {
+            /** Llm Provider */
+            llm_provider?: ("mock" | "anthropic" | "openai") | null;
+            /** Run Budget Usd */
+            run_budget_usd?: number | null;
+            /** Run Budget Tokens */
+            run_budget_tokens?: number | null;
+            /** Fanout Concurrency */
+            fanout_concurrency?: number | null;
+        };
+        /** TraceResponse */
+        TraceResponse: {
+            /** Run Id */
+            run_id: string;
+            /**
+             * Started At
+             * Format: date-time
+             */
+            started_at: string;
+            /** Finished At */
+            finished_at: string | null;
+            /** Spans */
+            spans: components["schemas"]["TraceSpan"][];
+            /** Total Cost Usd */
+            total_cost_usd: number;
+            /** Total Tokens */
+            total_tokens: number;
+        };
+        /** TraceSpan */
+        TraceSpan: {
+            /** Id */
+            id: string;
+            /** Parent Id */
+            parent_id?: string | null;
+            /** Name */
+            name: string;
+            /** Kind */
+            kind: string;
+            /** Agent */
+            agent?: string | null;
+            /** Listing Id */
+            listing_id?: string | null;
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            /** Duration Ms */
+            duration_ms: number;
+            /** Status */
+            status?: string | null;
+            /** Model */
+            model?: string | null;
+            /** Prompt Version */
+            prompt_version?: string | null;
+            /**
+             * Tokens In
+             * @default 0
+             */
+            tokens_in: number;
+            /**
+             * Tokens Out
+             * @default 0
+             */
+            tokens_out: number;
+            /**
+             * Cost Usd
+             * @default 0
+             */
+            cost_usd: number;
+            /**
+             * Cached
+             * @default false
+             */
+            cached: boolean;
         };
         /** ValidationError */
         ValidationError: {
@@ -750,6 +1280,37 @@ export interface operations {
             };
         };
     };
+    get_run_trace_api_runs__run_id__trace_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TraceResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_listing_api_listings__listing_id__get: {
         parameters: {
             query?: never;
@@ -768,6 +1329,375 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ListingDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_leases_api_leases_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeaseResponse"][];
+                };
+            };
+        };
+    };
+    upload_lease_api_leases_post: {
+        parameters: {
+            query?: {
+                listing_id?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_upload_lease_api_leases_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeaseResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_samples_api_leases_samples_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SampleList"];
+                };
+            };
+        };
+    };
+    analyze_sample_api_leases_samples__key__post: {
+        parameters: {
+            query?: {
+                listing_id?: string | null;
+            };
+            header?: never;
+            path: {
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeaseResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_lease_api_leases__lease_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lease_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeaseResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_lease_api_leases__lease_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lease_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_lease_file_api_leases__lease_id__file_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lease_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_negotiation_api_negotiations_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NegotiationRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NegotiationResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    request_magic_link_api_auth_magic_link_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MagicLinkRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MagicLinkResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    me_api_auth_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeResponse"];
+                };
+            };
+        };
+    };
+    compare_api_compare_get: {
+        parameters: {
+            query: {
+                ids: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompareResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_settings_api_settings_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SettingsResponse"];
+                };
+            };
+        };
+    };
+    update_settings_api_settings_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SettingsUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SettingsResponse"];
                 };
             };
             /** @description Validation Error */

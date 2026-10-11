@@ -59,11 +59,19 @@ export default function MissionControlPage() {
             shortlist in real time.
           </p>
         </div>
-        {effectiveStatus === "finished" && (
-          <Link href={`/runs/${runId}/results`} className={buttonVariants({})}>
-            Explore results <ArrowRight className="h-4 w-4" />
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/runs/${runId}/trace`}
+            className={buttonVariants({ variant: "outline", size: "sm" })}
+          >
+            Trace viewer
           </Link>
-        )}
+          {effectiveStatus === "finished" && (
+            <Link href={`/runs/${runId}/results`} className={buttonVariants({})}>
+              Explore results <ArrowRight className="h-4 w-4" />
+            </Link>
+          )}
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_340px]">

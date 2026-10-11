@@ -360,6 +360,48 @@
     }
    }
   },
+  "/api/runs/{run_id}/trace": {
+   "get": {
+    "tags": [
+     "runs"
+    ],
+    "summary": "Get Run Trace",
+    "operationId": "get_run_trace_api_runs__run_id__trace_get",
+    "parameters": [
+     {
+      "name": "run_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Run Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TraceResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
   "/api/listings/{listing_id}": {
    "get": {
     "tags": [
@@ -401,10 +443,533 @@
      }
     }
    }
+  },
+  "/api/leases": {
+   "post": {
+    "tags": [
+     "leases"
+    ],
+    "summary": "Upload Lease",
+    "operationId": "upload_lease_api_leases_post",
+    "parameters": [
+     {
+      "name": "listing_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Listing Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_upload_lease_api_leases_post"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/LeaseResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "get": {
+    "tags": [
+     "leases"
+    ],
+    "summary": "List Leases",
+    "operationId": "list_leases_api_leases_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/LeaseResponse"
+         },
+         "title": "Response List Leases Api Leases Get"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/leases/samples": {
+   "get": {
+    "tags": [
+     "leases"
+    ],
+    "summary": "List Samples",
+    "operationId": "list_samples_api_leases_samples_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SampleList"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/leases/samples/{key}": {
+   "post": {
+    "tags": [
+     "leases"
+    ],
+    "summary": "Analyze Sample",
+    "operationId": "analyze_sample_api_leases_samples__key__post",
+    "parameters": [
+     {
+      "name": "key",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Key"
+      }
+     },
+     {
+      "name": "listing_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Listing Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/LeaseResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/leases/{lease_id}": {
+   "get": {
+    "tags": [
+     "leases"
+    ],
+    "summary": "Get Lease",
+    "operationId": "get_lease_api_leases__lease_id__get",
+    "parameters": [
+     {
+      "name": "lease_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Lease Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/LeaseResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "leases"
+    ],
+    "summary": "Delete Lease",
+    "operationId": "delete_lease_api_leases__lease_id__delete",
+    "parameters": [
+     {
+      "name": "lease_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Lease Id"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/leases/{lease_id}/file": {
+   "get": {
+    "tags": [
+     "leases"
+    ],
+    "summary": "Get Lease File",
+    "operationId": "get_lease_file_api_leases__lease_id__file_get",
+    "parameters": [
+     {
+      "name": "lease_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Lease Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/negotiations": {
+   "post": {
+    "tags": [
+     "negotiations"
+    ],
+    "summary": "Create Negotiation",
+    "operationId": "create_negotiation_api_negotiations_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/NegotiationRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/NegotiationResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/auth/magic-link": {
+   "post": {
+    "tags": [
+     "auth"
+    ],
+    "summary": "Request Magic Link",
+    "description": "Demo mode returns the session token directly (no mail service);\nproduction would email a one-time link instead.",
+    "operationId": "request_magic_link_api_auth_magic_link_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/MagicLinkRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MagicLinkResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/auth/me": {
+   "get": {
+    "tags": [
+     "auth"
+    ],
+    "summary": "Me",
+    "operationId": "me_api_auth_me_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MeResponse"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/compare": {
+   "get": {
+    "tags": [
+     "compare"
+    ],
+    "summary": "Compare",
+    "operationId": "compare_api_compare_get",
+    "parameters": [
+     {
+      "name": "ids",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Ids"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CompareResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/settings": {
+   "get": {
+    "tags": [
+     "settings"
+    ],
+    "summary": "Read Settings",
+    "operationId": "read_settings_api_settings_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SettingsResponse"
+        }
+       }
+      }
+     }
+    }
+   },
+   "patch": {
+    "tags": [
+     "settings"
+    ],
+    "summary": "Update Settings",
+    "description": "Runtime-adjustable knobs (apply to new runs; process-local).",
+    "operationId": "update_settings_api_settings_patch",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SettingsUpdate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SettingsResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
   }
  },
  "components": {
   "schemas": {
+   "Ask": {
+    "properties": {
+     "kind": {
+      "type": "string",
+      "enum": [
+       "rent_reduction",
+       "waived_fee",
+       "free_parking",
+       "lease_term",
+       "move_in_date",
+       "clause_redline"
+      ],
+      "title": "Kind"
+     },
+     "text": {
+      "type": "string",
+      "title": "Text"
+     }
+    },
+    "type": "object",
+    "required": [
+     "kind",
+     "text"
+    ],
+    "title": "Ask"
+   },
+   "Body_upload_lease_api_leases_post": {
+    "properties": {
+     "file": {
+      "type": "string",
+      "contentMediaType": "application/octet-stream",
+      "title": "File"
+     }
+    },
+    "type": "object",
+    "required": [
+     "file"
+    ],
+    "title": "Body_upload_lease_api_leases_post"
+   },
    "BriefCreateRequest": {
     "properties": {
      "text": {
@@ -466,6 +1031,56 @@
      "created_at"
     ],
     "title": "BriefResponse"
+   },
+   "CompareResponse": {
+    "properties": {
+     "listings": {
+      "items": {
+       "$ref": "#/components/schemas/ListingWithResults"
+      },
+      "type": "array",
+      "title": "Listings"
+     }
+    },
+    "type": "object",
+    "title": "CompareResponse"
+   },
+   "EvidenceDetail": {
+    "properties": {
+     "excerpt": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Excerpt"
+     },
+     "source_url": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Source Url"
+     },
+     "source_type": {
+      "type": "string",
+      "title": "Source Type"
+     }
+    },
+    "type": "object",
+    "required": [
+     "excerpt",
+     "source_url",
+     "source_type"
+    ],
+    "title": "EvidenceDetail"
    },
    "Fee": {
     "properties": {
@@ -534,6 +1149,364 @@
      "database"
     ],
     "title": "HealthResponse"
+   },
+   "JurisdictionNote": {
+    "properties": {
+     "rule_id": {
+      "type": "string",
+      "title": "Rule Id"
+     },
+     "text": {
+      "type": "string",
+      "title": "Text"
+     },
+     "source_url": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Source Url"
+     },
+     "verified": {
+      "type": "boolean",
+      "title": "Verified",
+      "default": false
+     }
+    },
+    "type": "object",
+    "required": [
+     "rule_id",
+     "text"
+    ],
+    "title": "JurisdictionNote"
+   },
+   "LeaseAnalysis": {
+    "properties": {
+     "lease_id": {
+      "type": "string",
+      "title": "Lease Id"
+     },
+     "risk_score": {
+      "type": "integer",
+      "maximum": 100.0,
+      "minimum": 0.0,
+      "title": "Risk Score"
+     },
+     "findings": {
+      "items": {
+       "$ref": "#/components/schemas/LeaseFindingModel"
+      },
+      "type": "array",
+      "title": "Findings"
+     },
+     "page_count": {
+      "type": "integer",
+      "title": "Page Count"
+     },
+     "ocr_used": {
+      "type": "boolean",
+      "title": "Ocr Used",
+      "default": false
+     },
+     "questions_for_landlord": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Questions For Landlord"
+     },
+     "disclaimer": {
+      "type": "string",
+      "title": "Disclaimer",
+      "default": "Not legal advice. Verify with a local tenant rights organization or attorney."
+     }
+    },
+    "type": "object",
+    "required": [
+     "lease_id",
+     "risk_score",
+     "findings",
+     "page_count"
+    ],
+    "title": "LeaseAnalysis"
+   },
+   "LeaseCitation": {
+    "properties": {
+     "page": {
+      "type": "integer",
+      "title": "Page"
+     },
+     "bbox": {
+      "prefixItems": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "number"
+       },
+       {
+        "type": "number"
+       },
+       {
+        "type": "number"
+       }
+      ],
+      "type": "array",
+      "maxItems": 4,
+      "minItems": 4,
+      "title": "Bbox"
+     },
+     "quote": {
+      "type": "string",
+      "title": "Quote"
+     }
+    },
+    "type": "object",
+    "required": [
+     "page",
+     "bbox",
+     "quote"
+    ],
+    "title": "LeaseCitation"
+   },
+   "LeaseFindingModel": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "clause_type": {
+      "type": "string",
+      "enum": [
+       "security_deposit",
+       "nonrefundable_fees",
+       "early_termination",
+       "auto_renewal",
+       "rent_increase",
+       "late_fees",
+       "maintenance_responsibility",
+       "landlord_entry",
+       "subletting",
+       "guest_limits",
+       "pets",
+       "utilities",
+       "parking",
+       "renters_insurance",
+       "joint_several_liability",
+       "liability_waiver",
+       "attorneys_fees",
+       "arbitration",
+       "mold_pest_disclosure",
+       "moveout_charges",
+       "as_is",
+       "other"
+      ],
+      "title": "Clause Type"
+     },
+     "severity": {
+      "type": "string",
+      "enum": [
+       "info",
+       "caution",
+       "high"
+      ],
+      "title": "Severity"
+     },
+     "explanation": {
+      "type": "string",
+      "title": "Explanation"
+     },
+     "why_it_matters": {
+      "type": "string",
+      "title": "Why It Matters"
+     },
+     "suggested_ask": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Suggested Ask"
+     },
+     "citation": {
+      "$ref": "#/components/schemas/LeaseCitation"
+     },
+     "jurisdiction_note": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/JurisdictionNote"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "confidence": {
+      "type": "number",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Confidence"
+     }
+    },
+    "type": "object",
+    "required": [
+     "clause_type",
+     "severity",
+     "explanation",
+     "why_it_matters",
+     "citation",
+     "confidence"
+    ],
+    "title": "LeaseFindingModel"
+   },
+   "LeaseResponse": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "filename": {
+      "type": "string",
+      "title": "Filename"
+     },
+     "listing_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Listing Id"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "page_count": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Page Count"
+     },
+     "ocr_used": {
+      "type": "boolean",
+      "title": "Ocr Used"
+     },
+     "risk_score": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Risk Score"
+     },
+     "summary": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Summary"
+     },
+     "error": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Error"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     },
+     "analysis": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/LeaseAnalysis"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "filename",
+     "listing_id",
+     "status",
+     "page_count",
+     "ocr_used",
+     "risk_score",
+     "summary",
+     "error",
+     "created_at"
+    ],
+    "title": "LeaseResponse"
+   },
+   "LeveragePoint": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "text": {
+      "type": "string",
+      "title": "Text"
+     },
+     "evidence_ids": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Evidence Ids"
+     },
+     "kind": {
+      "type": "string",
+      "enum": [
+       "price",
+       "reputation",
+       "lease",
+       "market",
+       "timing"
+      ],
+      "title": "Kind"
+     }
+    },
+    "type": "object",
+    "required": [
+     "text",
+     "evidence_ids",
+     "kind"
+    ],
+    "title": "LeveragePoint"
    },
    "ListingDetail": {
     "properties": {
@@ -777,6 +1750,202 @@
      "listing"
     ],
     "title": "ListingWithResults"
+   },
+   "MagicLinkRequest": {
+    "properties": {
+     "email": {
+      "type": "string",
+      "format": "email",
+      "title": "Email"
+     }
+    },
+    "type": "object",
+    "required": [
+     "email"
+    ],
+    "title": "MagicLinkRequest"
+   },
+   "MagicLinkResponse": {
+    "properties": {
+     "message": {
+      "type": "string",
+      "title": "Message"
+     },
+     "token": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Token"
+     }
+    },
+    "type": "object",
+    "required": [
+     "message"
+    ],
+    "title": "MagicLinkResponse"
+   },
+   "MeResponse": {
+    "properties": {
+     "email": {
+      "type": "string",
+      "title": "Email"
+     },
+     "user_id": {
+      "type": "string",
+      "title": "User Id"
+     }
+    },
+    "type": "object",
+    "required": [
+     "email",
+     "user_id"
+    ],
+    "title": "MeResponse"
+   },
+   "NegotiationBundle": {
+    "properties": {
+     "listing_id": {
+      "type": "string",
+      "title": "Listing Id"
+     },
+     "drafts": {
+      "items": {
+       "$ref": "#/components/schemas/NegotiationDraft"
+      },
+      "type": "array",
+      "title": "Drafts"
+     }
+    },
+    "type": "object",
+    "required": [
+     "listing_id",
+     "drafts"
+    ],
+    "title": "NegotiationBundle"
+   },
+   "NegotiationDraft": {
+    "properties": {
+     "tone": {
+      "type": "string",
+      "enum": [
+       "friendly",
+       "firm",
+       "data-driven"
+      ],
+      "title": "Tone"
+     },
+     "subject": {
+      "type": "string",
+      "title": "Subject"
+     },
+     "body": {
+      "type": "string",
+      "title": "Body"
+     },
+     "leverage_points": {
+      "items": {
+       "$ref": "#/components/schemas/LeveragePoint"
+      },
+      "type": "array",
+      "title": "Leverage Points"
+     },
+     "asks": {
+      "items": {
+       "$ref": "#/components/schemas/Ask"
+      },
+      "type": "array",
+      "title": "Asks"
+     }
+    },
+    "type": "object",
+    "required": [
+     "tone",
+     "subject",
+     "body",
+     "leverage_points",
+     "asks"
+    ],
+    "title": "NegotiationDraft"
+   },
+   "NegotiationRequest": {
+    "properties": {
+     "listing_id": {
+      "type": "string",
+      "title": "Listing Id"
+     },
+     "lease_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Lease Id"
+     },
+     "selected_leverage_ids": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Selected Leverage Ids"
+     },
+     "length": {
+      "type": "string",
+      "enum": [
+       "short",
+       "standard",
+       "long"
+      ],
+      "title": "Length",
+      "default": "standard"
+     }
+    },
+    "type": "object",
+    "required": [
+     "listing_id"
+    ],
+    "title": "NegotiationRequest"
+   },
+   "NegotiationResponse": {
+    "properties": {
+     "bundle": {
+      "$ref": "#/components/schemas/NegotiationBundle"
+     },
+     "all_leverage_points": {
+      "items": {
+       "$ref": "#/components/schemas/LeveragePoint"
+      },
+      "type": "array",
+      "title": "All Leverage Points"
+     },
+     "evidence": {
+      "additionalProperties": {
+       "$ref": "#/components/schemas/EvidenceDetail"
+      },
+      "type": "object",
+      "title": "Evidence"
+     }
+    },
+    "type": "object",
+    "required": [
+     "bundle",
+     "all_leverage_points"
+    ],
+    "title": "NegotiationResponse"
    },
    "Place": {
     "properties": {
@@ -1119,6 +2288,42 @@
     ],
     "title": "RunSummary"
    },
+   "SampleLease": {
+    "properties": {
+     "key": {
+      "type": "string",
+      "title": "Key"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "building_key": {
+      "type": "string",
+      "title": "Building Key"
+     }
+    },
+    "type": "object",
+    "required": [
+     "key",
+     "title",
+     "building_key"
+    ],
+    "title": "SampleLease"
+   },
+   "SampleList": {
+    "properties": {
+     "samples": {
+      "items": {
+       "$ref": "#/components/schemas/SampleLease"
+      },
+      "type": "array",
+      "title": "Samples"
+     }
+    },
+    "type": "object",
+    "title": "SampleList"
+   },
    "SearchBriefInput": {
     "properties": {
      "budget_min": {
@@ -1245,6 +2450,289 @@
      "budget_max"
     ],
     "title": "SearchBriefInput"
+   },
+   "SettingsResponse": {
+    "properties": {
+     "demo_mode": {
+      "type": "boolean",
+      "title": "Demo Mode"
+     },
+     "llm_provider": {
+      "type": "string",
+      "title": "Llm Provider"
+     },
+     "run_budget_usd": {
+      "type": "number",
+      "title": "Run Budget Usd"
+     },
+     "run_budget_tokens": {
+      "type": "integer",
+      "title": "Run Budget Tokens"
+     },
+     "fanout_concurrency": {
+      "type": "integer",
+      "title": "Fanout Concurrency"
+     },
+     "lease_retention_days": {
+      "type": "integer",
+      "title": "Lease Retention Days"
+     },
+     "keys": {
+      "additionalProperties": {
+       "type": "boolean"
+      },
+      "type": "object",
+      "title": "Keys"
+     }
+    },
+    "type": "object",
+    "required": [
+     "demo_mode",
+     "llm_provider",
+     "run_budget_usd",
+     "run_budget_tokens",
+     "fanout_concurrency",
+     "lease_retention_days",
+     "keys"
+    ],
+    "title": "SettingsResponse"
+   },
+   "SettingsUpdate": {
+    "properties": {
+     "llm_provider": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "mock",
+         "anthropic",
+         "openai"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Llm Provider"
+     },
+     "run_budget_usd": {
+      "anyOf": [
+       {
+        "type": "number",
+        "maximum": 50.0,
+        "exclusiveMinimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Run Budget Usd"
+     },
+     "run_budget_tokens": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 5000000.0,
+        "exclusiveMinimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Run Budget Tokens"
+     },
+     "fanout_concurrency": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 20.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Fanout Concurrency"
+     }
+    },
+    "type": "object",
+    "title": "SettingsUpdate"
+   },
+   "TraceResponse": {
+    "properties": {
+     "run_id": {
+      "type": "string",
+      "title": "Run Id"
+     },
+     "started_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Started At"
+     },
+     "finished_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Finished At"
+     },
+     "spans": {
+      "items": {
+       "$ref": "#/components/schemas/TraceSpan"
+      },
+      "type": "array",
+      "title": "Spans"
+     },
+     "total_cost_usd": {
+      "type": "number",
+      "title": "Total Cost Usd"
+     },
+     "total_tokens": {
+      "type": "integer",
+      "title": "Total Tokens"
+     }
+    },
+    "type": "object",
+    "required": [
+     "run_id",
+     "started_at",
+     "finished_at",
+     "spans",
+     "total_cost_usd",
+     "total_tokens"
+    ],
+    "title": "TraceResponse"
+   },
+   "TraceSpan": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "parent_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Parent Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "kind": {
+      "type": "string",
+      "title": "Kind"
+     },
+     "agent": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Agent"
+     },
+     "listing_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Listing Id"
+     },
+     "start": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Start"
+     },
+     "end": {
+      "type": "string",
+      "format": "date-time",
+      "title": "End"
+     },
+     "duration_ms": {
+      "type": "integer",
+      "title": "Duration Ms"
+     },
+     "status": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Status"
+     },
+     "model": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Model"
+     },
+     "prompt_version": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Prompt Version"
+     },
+     "tokens_in": {
+      "type": "integer",
+      "title": "Tokens In",
+      "default": 0
+     },
+     "tokens_out": {
+      "type": "integer",
+      "title": "Tokens Out",
+      "default": 0
+     },
+     "cost_usd": {
+      "type": "number",
+      "title": "Cost Usd",
+      "default": 0.0
+     },
+     "cached": {
+      "type": "boolean",
+      "title": "Cached",
+      "default": false
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "name",
+     "kind",
+     "start",
+     "end",
+     "duration_ms"
+    ],
+    "title": "TraceSpan"
    },
    "ValidationError": {
     "properties": {

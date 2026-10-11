@@ -175,6 +175,23 @@ async def analyze_sample(
     return await _lease_response(lease, session, include_analysis=False)
 
 
+@router.get("", response_model=list[LeaseResponse])
+async def list_leases(user: CurrentUser, session: DbSession) -> list[LeaseResponse]:
+    rows = (
+        (
+            await session.execute(
+                select(models.Lease)
+                .where(models.Lease.user_id == user.id)
+                .order_by(models.Lease.created_at.desc())
+                .limit(50)
+            )
+        )
+        .scalars()
+        .all()
+    )
+    return [await _lease_response(row, session, include_analysis=False) for row in rows]
+
+
 @router.get("/{lease_id}", response_model=LeaseResponse)
 async def get_lease(lease_id: str, user: CurrentUser, session: DbSession) -> LeaseResponse:
     lease = (

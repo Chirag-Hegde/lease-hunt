@@ -1,8 +1,10 @@
 from collections.abc import Sequence  # noqa: TC003 (used in cast string)
+from datetime import datetime, timedelta
 from typing import Any, cast
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 from sqlalchemy import select
 
 from app.agents.contracts import SearchBriefInput
@@ -168,3 +170,134 @@ async def list_runs(user: CurrentUser, session: DbSession) -> list[RunSummary]:
         .all()
     )
     return [RunSummary(**_summary(run)) for run in runs]
+
+
+# --- Trace viewer -------------------------------------------------------------
+
+
+class TraceSpan(BaseModel):
+    id: str
+    parent_id: str | None = None
+    name: str
+    kind: str  # agent | tool | llm
+    agent: str | None = None
+    listing_id: str | None = None
+    start: datetime
+    end: datetime
+    duration_ms: int
+    status: str | None = None
+    model: str | None = None
+    prompt_version: str | None = None
+    tokens_in: int = 0
+    tokens_out: int = 0
+    cost_usd: float = 0.0
+    cached: bool = False
+
+
+class TraceResponse(BaseModel):
+    run_id: str
+    started_at: datetime
+    finished_at: datetime | None
+    spans: list[TraceSpan]
+    total_cost_usd: float
+    total_tokens: int
+
+
+@router.get("/{run_id}/trace", response_model=TraceResponse)
+async def get_run_trace(run_id: str, user: CurrentUser, session: DbSession) -> TraceResponse:
+    run = await _get_run(run_id, user, session)
+    events = (
+        (
+            await session.execute(
+                select(models.RunEvent)
+                .where(models.RunEvent.run_id == run_id)
+                .order_by(models.RunEvent.seq)
+            )
+        )
+        .scalars()
+        .all()
+    )
+    llm_calls = (
+        (
+            await session.execute(
+                select(models.LLMCall)
+                .where(models.LLMCall.run_id == run_id)
+                .order_by(models.LLMCall.created_at)
+            )
+        )
+        .scalars()
+        .all()
+    )
+
+    spans: list[TraceSpan] = []
+    open_spans: dict[tuple[str, Any], list[models.RunEvent]] = {}
+
+    for event in events:
+        key = (event.agent or "", event.payload.get("listing_id"))
+        if event.type == "agent_started":
+            open_spans.setdefault(key, []).append(event)
+        elif event.type == "agent_finished":
+            stack = open_spans.get(key, [])
+            start_event = stack.pop(0) if stack else event
+            span_id = f"agent-{event.seq}"
+            spans.append(
+                TraceSpan(
+                    id=span_id,
+                    name=event.agent or "agent",
+                    kind="agent",
+                    agent=event.agent,
+                    listing_id=event.payload.get("listing_id"),
+                    start=start_event.created_at,
+                    end=event.created_at,
+                    duration_ms=int(event.payload.get("latency_ms", 0))
+                    or int((event.created_at - start_event.created_at).total_seconds() * 1000),
+                    status=str(event.payload.get("status", "")) or None,
+                    tokens_in=int(event.payload.get("tokens_in", 0)),
+                    tokens_out=int(event.payload.get("tokens_out", 0)),
+                    cost_usd=float(event.payload.get("cost_usd", 0.0)),
+                )
+            )
+        elif event.type == "tool_called":
+            spans.append(
+                TraceSpan(
+                    id=f"tool-{event.seq}",
+                    name=str(event.payload.get("tool", "tool")),
+                    kind="tool",
+                    agent=event.agent,
+                    listing_id=event.payload.get("listing_id"),
+                    start=event.created_at,
+                    end=event.created_at,
+                    duration_ms=0,
+                )
+            )
+
+    for call in llm_calls:
+        end = call.created_at
+        start = end - timedelta(milliseconds=call.latency_ms)
+        spans.append(
+            TraceSpan(
+                id=f"llm-{call.id}",
+                name=f"{call.task} ({call.model})",
+                kind="llm",
+                agent=call.agent,
+                start=start,
+                end=end,
+                duration_ms=call.latency_ms,
+                model=call.model,
+                prompt_version=call.prompt_version,
+                tokens_in=call.tokens_in,
+                tokens_out=call.tokens_out,
+                cost_usd=call.cost_usd,
+                cached=call.cached,
+            )
+        )
+
+    spans.sort(key=lambda s: s.start)
+    return TraceResponse(
+        run_id=run_id,
+        started_at=run.started_at,
+        finished_at=run.finished_at,
+        spans=spans,
+        total_cost_usd=run.cost_usd,
+        total_tokens=run.tokens_in + run.tokens_out,
+    )

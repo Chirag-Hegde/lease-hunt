@@ -39,12 +39,15 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
+    from app.api.routes_auth import router as auth_router
     from app.api.routes_briefs import router as briefs_router
+    from app.api.routes_compare import router as compare_router
     from app.api.routes_health import router as health_router
     from app.api.routes_leases import router as leases_router
     from app.api.routes_listings import router as listings_router
     from app.api.routes_negotiations import router as negotiations_router
     from app.api.routes_runs import router as runs_router
+    from app.api.routes_settings import router as settings_router
 
     app.include_router(health_router)
     app.include_router(briefs_router)
@@ -52,6 +55,9 @@ def create_app() -> FastAPI:
     app.include_router(listings_router)
     app.include_router(leases_router)
     app.include_router(negotiations_router)
+    app.include_router(auth_router)
+    app.include_router(compare_router)
+    app.include_router(settings_router)
     return app
 
 
