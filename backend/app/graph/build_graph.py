@@ -152,6 +152,27 @@ async def critic_node(state: RunState) -> dict[str, Any]:
     return {"critic": critic}
 
 
+async def _isochrone_bands(ctx: RunContext) -> list[dict[str, Any]]:
+    """Isochrone for the primary (highest-weight) place so the UI can shade
+    'reachable within tolerance' areas."""
+    places = [p for p in ctx.brief.important_places if p.lat is not None and p.lng is not None]
+    if not places:
+        return []
+    primary = max(places, key=lambda p: p.weight)
+    mode = primary.modes[0] if primary.modes else "drive"
+    bands: list[dict[str, Any]] = []
+    for minutes in (primary.tolerance_minutes, int(primary.tolerance_minutes * 1.5)):
+        try:
+            assert primary.lat is not None and primary.lng is not None
+            feature = await ctx.commute.isochrone((primary.lat, primary.lng), mode, minutes)
+        except Exception:
+            continue
+        bands.append(
+            {"place_label": primary.label, "mode": mode, "minutes": minutes, "geojson": feature}
+        )
+    return bands
+
+
 async def rank_node(state: RunState) -> dict[str, Any]:
     ctx = get_run_context(state["run_id"])
     output = _scout_output(state)
@@ -173,6 +194,10 @@ async def rank_node(state: RunState) -> dict[str, Any]:
         "critic": critic.get("report") if critic else None,
         "relax_suggestion": output.relax_suggestion if output else None,
         "budget_exceeded": ctx.budget.exceeded,
+        "isochrones": await _isochrone_bands(ctx),
+        "match_explanations": {
+            m.listing.id: m.explanation for m in (output.matches if output else [])
+        },
     }
     ranked_dumps: list[dict[str, Any]] = report["ranked"]
     await ctx.bus.publish(
@@ -199,3 +224,12 @@ def build_graph(checkpointer: Any) -> Any:
     graph.add_edge("critic", "rank")
     graph.add_edge("rank", END)
     return graph.compile(checkpointer=checkpointer)
+
+
+# --- Specialist agent registration (phases 4+) -------------------------------
+# Imported here (bottom of module) to avoid circular imports.
+from app.agents.commute import commute_agent  # noqa: E402
+from app.agents.price import price_agent  # noqa: E402
+
+register_per_listing_agent("commute", commute_agent)
+register_per_listing_agent("price", price_agent)
