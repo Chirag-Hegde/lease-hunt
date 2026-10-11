@@ -187,3 +187,71 @@ def label_review_cluster(context: dict[str, Any]) -> BaseModel:
     else:
         sentiment = lexicon
     return ClusterLabel(theme=theme, sentiment=round(max(-1.0, min(1.0, sentiment)), 2))
+
+
+# Ordered: first match wins. Heading is checked before body text.
+_CLAUSE_KEYWORDS: list[tuple[str, list[str]]] = [
+    ("security_deposit", ["security deposit"]),
+    (
+        "early_termination",
+        ["early termination", "terminates this lease prior", "must vacate before"],
+    ),
+    ("auto_renewal", ["automatically renew", "renewal"]),
+    ("rent_increase", ["rent adjustment", "increase the monthly rent", "rent shall remain fixed"]),
+    ("late_fees", ["late charge", "late fee"]),
+    ("landlord_entry", ["right of entry", "enter the premises"]),
+    ("subletting", ["sublet", "assignment"]),
+    ("guest_limits", ["guest", "occupancy and guests", "unauthorized occupant"]),
+    ("pets", ["pet"]),
+    ("renters_insurance", ["renter's insurance", "renters insurance"]),
+    ("joint_several_liability", ["jointly and severally", "joint and several"]),
+    ("liability_waiver", ["waiver of liability", "indemnif", "releases landlord"]),
+    ("attorneys_fees", ["attorney"]),
+    ("arbitration", ["arbitration", "dispute resolution", "trial by jury"]),
+    ("mold_pest_disclosure", ["mold", "pest control service"]),
+    ("moveout_charges", ["move-out", "upon vacating"]),
+    ("as_is", ["as-is", '"as-is"', "condition of premises"]),
+    ("nonrefundable_fees", ["non-refundable", "move-in fee", "administrative fee"]),
+    ("maintenance_responsibility", ["maintenance", "repairs"]),
+    ("utilities", ["utilit"]),
+    ("parking", ["parking"]),
+]
+
+
+@register_mock("clause_classify")
+def classify_clause(context: dict[str, Any]) -> BaseModel:
+    from app.agents.lease import ClauseClassification
+
+    heading = str(context.get("heading") or "").lower()
+    text = str(context.get("text") or "").lower()
+    for clause_type, keywords in _CLAUSE_KEYWORDS:
+        if any(kw in heading for kw in keywords):
+            return ClauseClassification(clause_type=clause_type)
+    for clause_type, keywords in _CLAUSE_KEYWORDS:
+        if any(kw in text for kw in keywords):
+            return ClauseClassification(clause_type=clause_type)
+    return ClauseClassification(clause_type="other")
+
+
+@register_mock("clause_risk")
+def assess_clause_risk(context: dict[str, Any]) -> BaseModel:
+    from app.agents.lease import ClauseRiskAssessment
+
+    rule = context.get("rule")
+    default = context.get("default")
+    source = rule or default
+    if isinstance(source, dict):
+        return ClauseRiskAssessment(
+            severity=source.get("severity", "info"),
+            explanation=str(source.get("explanation", "Standard lease provision.")),
+            why_it_matters=str(source.get("why_it_matters", "No specific risk detected.")),
+            suggested_ask=source.get("suggested_ask"),
+            confidence=0.9 if rule else 0.72,
+        )
+    return ClauseRiskAssessment(
+        severity="info",
+        explanation="General lease provision with no specific risk pattern.",
+        why_it_matters="Nothing in this clause changed the overall risk picture.",
+        suggested_ask=None,
+        confidence=0.5,
+    )

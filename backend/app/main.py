@@ -16,6 +16,9 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     if settings.is_sqlite:
         await init_db()
     settings.upload_dir.mkdir(parents=True, exist_ok=True)
+    from app.api.routes_leases import purge_expired_leases
+
+    await purge_expired_leases()
     yield
     await dispose_engine()
 
@@ -38,6 +41,7 @@ def create_app() -> FastAPI:
 
     from app.api.routes_briefs import router as briefs_router
     from app.api.routes_health import router as health_router
+    from app.api.routes_leases import router as leases_router
     from app.api.routes_listings import router as listings_router
     from app.api.routes_runs import router as runs_router
 
@@ -45,6 +49,7 @@ def create_app() -> FastAPI:
     app.include_router(briefs_router)
     app.include_router(runs_router)
     app.include_router(listings_router)
+    app.include_router(leases_router)
     return app
 
 

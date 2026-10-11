@@ -1,0 +1,379 @@
+# California jurisdiction rule pack.
+# Every rule cites an official source where one exists; rules without a
+# verified source are marked verified: false and shown as "worth asking
+# about", never as "illegal". Not legal advice.
+state: California
+version: "2026.10"
+
+rules:
+  - id: ca-deposit-over-one-month
+    clause_type: security_deposit
+    severity: high
+    triggers:
+      - "(two|three)\\s*\\(\\d\\)\\s*months?[''’]? rent"
+      - "(two|three) months[''’]? rent"
+      - "deposit equal to (2|3)x"
+    explanation: "The deposit asked for is more than one month's rent."
+    why_it_matters: "Since July 2024 (AB 12), California caps security deposits at one month's rent for most landlords, whether the unit is furnished or not."
+    suggested_ask: "Ask the landlord to reduce the security deposit to one month's rent, citing Civil Code §1950.5 as amended by AB 12 (2023)."
+    jurisdiction_note: "Cal. Civ. Code §1950.5(c): a landlord may generally demand no more than one month's rent as a security deposit (limited small-landlord exception allows two months)."
+    source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1950.5"
+    verified: true
+
+  - id: ca-deposit-return-window
+    clause_type: security_deposit
+    severity: high
+    triggers:
+      - "within (3[1-9]|[4-9]\\d) days of move-out"
+      - "returned within (45|60|90) days"
+    safe_patterns:
+      - "within 21 days"
+    explanation: "The lease gives the landlord longer than the law allows to return your deposit."
+    why_it_matters: "California requires an itemized statement and refund of the deposit balance within 21 days after you move out."
+    suggested_ask: "Ask to correct the deposit-return window to 21 days per Civil Code §1950.5(g)."
+    jurisdiction_note: "Cal. Civ. Code §1950.5(g)(1): itemized statement and any refund due within 21 calendar days after the tenant vacates."
+    source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1950.5"
+    verified: true
+
+  - id: ca-nonrefundable-fees
+    clause_type: nonrefundable_fees
+    severity: high
+    triggers:
+      - "non-?refundable (move-?in|redecorating|cleaning|pet)? ?(fee|deposit)"
+      - "earned upon receipt and shall not be applied"
+    safe_patterns:
+      - "application and administrative fee"
+    explanation: "The lease labels move-in money as non-refundable."
+    why_it_matters: "California treats payments that secure performance as part of the security deposit, and deposits must be refundable; 'non-refundable' move-in or cleaning fees are generally not enforceable."
+    suggested_ask: "Ask for these fees to be struck or recharacterized as part of the refundable security deposit, citing Civil Code §1950.5(m)."
+    jurisdiction_note: "Cal. Civ. Code §1950.5(m): it is unlawful to characterize a security as 'nonrefundable'."
+    source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1950.5"
+    verified: true
+
+  - id: ca-early-termination-penalty
+    clause_type: early_termination
+    severity: high
+    triggers:
+      - "termination fee equal to (two|three)"
+      - "early termination fee .* months"
+    safe_patterns:
+      - "reasonable efforts to re-?rent"
+    explanation: "Breaking the lease costs a flat multi-month penalty on top of rent owed."
+    why_it_matters: "California requires landlords to mitigate damages by trying to re-rent; a large fixed fee stacked on top of rent-until-rerental can exceed what a court would allow as a reasonable estimate of actual damages."
+    suggested_ask: "Ask to replace the flat fee with responsibility for rent only until a replacement tenant is found, plus actual re-rental costs (Civil Code §1951.2)."
+    jurisdiction_note: "Cal. Civ. Code §1951.2 limits lease-break recovery to actual damages net of what the landlord could reasonably avoid by re-letting."
+    source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1951.2"
+    verified: true
+
+  - id: ca-auto-renewal-notice
+    clause_type: auto_renewal
+    severity: caution
+    triggers:
+      - "automatically renew"
+    explanation: "The lease renews for a full new term unless you give long advance notice."
+    why_it_matters: "Missing the notice window can lock you into another 12 months. California requires auto-renewal provisions to be prominently disclosed (boldface) to be enforceable."
+    suggested_ask: "Ask to convert the renewal to month-to-month after the initial term, or to shorten the non-renewal notice to 30 days."
+    jurisdiction_note: "Cal. Civ. Code §1945.5: automatic renewal terms must appear in at least 8-point boldface above the signature line to be enforceable."
+    source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1945.5"
+    verified: true
+
+  - id: ca-rent-increase-above-cap
+    clause_type: rent_increase
+    severity: high
+    triggers:
+      - "(1[1-9]|[2-9]\\d)\\s*percent"
+      - "\\((1[1-9]|[2-9]\\d)%\\)"
+    explanation: "The lease reserves annual rent increases above California's cap."
+    why_it_matters: "For most buildings over 15 years old, the Tenant Protection Act caps annual increases at 5% + local CPI, never more than 10%."
+    suggested_ask: "Ask to cap renewal increases at the AB 1482 limit (5% + CPI, max 10%) and to confirm whether the unit is covered."
+    jurisdiction_note: "Cal. Civ. Code §1947.12 (AB 1482): gross rental rate may not increase more than 5% plus CPI, max 10%, in any 12 months for covered units."
+    source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1947.12"
+    verified: true
+
+  - id: ca-late-fee-excessive
+    clause_type: late_fees
+    severity: high
+    triggers:
+      - "no grace period"
+      - "per day until paid"
+      - "late charge of \\$(1[0-9]\\d|[2-9]\\d\\d)"
+    safe_patterns:
+      - "late charge of \\$[1-9]\\d?\\b"
+    explanation: "Late charges here are steep, stack daily, and start immediately."
+    why_it_matters: "Late fees in California must be a reasonable estimate of the landlord's actual cost from the late payment; large flat fees plus daily charges are routinely challenged as unenforceable penalties."
+    suggested_ask: "Ask for a 3–5 day grace period and a single modest late fee (e.g. $50), citing Civil Code §1671's reasonableness standard."
+    jurisdiction_note: "Cal. Civ. Code §1671: a liquidated-damages clause is void when it functions as a penalty rather than a reasonable estimate of actual damages."
+    source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1671"
+    verified: true
+
+  - id: ca-maintenance-shifted
+    clause_type: maintenance_responsibility
+    severity: high
+    triggers:
+      - "full responsibility for all repairs"
+      - "waives any right to repair"
+      - "regardless of cause"
+    safe_patterns:
+      - "habitable condition"
+    explanation: "The lease shifts all repair and habitability duties onto you."
+    why_it_matters: "A landlord's duty to keep the unit habitable cannot be waived in a California residential lease; clauses doing so are void."
+    suggested_ask: "Ask to strike this clause and restate the landlord's habitability duties under Civil Code §1941; cite §1942.1 (the duty can't be waived)."
+    jurisdiction_note: "Cal. Civ. Code §1942.1: an agreement waiving the tenant's habitability rights is void as against public policy (narrow repair-for-rent exception)."
+    source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1942.1"
+    verified: true
+
+  - id: ca-entry-without-notice
+    clause_type: landlord_entry
+    severity: high
+    triggers:
+      - "without (prior )?notice"
+      - "at any (reasonable )?time"
+    safe_patterns:
+      - "24 hours[''’]? written notice"
+    explanation: "The landlord reserves the right to enter without advance notice."
+    why_it_matters: "Outside emergencies, California requires reasonable advance notice — presumed to be 24 hours in writing — and entry during business hours."
+    suggested_ask: "Ask to conform the entry clause to Civil Code §1954: 24 hours' written notice, normal business hours, emergencies excepted."
+    jurisdiction_note: "Cal. Civ. Code §1954 limits landlord entry to specified purposes with reasonable (presumptively 24-hour written) notice."
+    source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1954"
+    verified: true
+
+  - id: ca-sublet-absolute-ban
+    clause_type: subletting
+    severity: caution
+    triggers:
+      - "sole and absolute discretion"
+      - "under no circumstances .* sublet"
+    explanation: "Subletting and assignment require consent the landlord may withhold for any reason."
+    why_it_matters: "An absolute ban leaves you no flexibility if you need to move mid-lease; combined with a lease-break fee it compounds your exposure."
+    suggested_ask: "Ask to soften to 'consent not unreasonably withheld' for subletting or assignment."
+    jurisdiction_note: "No California statute guarantees residential subletting rights; this is a negotiation point rather than a legal violation."
+    source_url: "https://landlordtenant.dre.ca.gov/resources/guidebook/index.html"
+    verified: false
+
+  - id: ca-guest-limits
+    clause_type: guest_limits
+    severity: caution
+    triggers:
+      - "more than seven \\(7\\) days"
+      - "deemed an unauthorized occupant"
+      - "guest may remain .* days"
+    explanation: "Guests beyond a short stay need written approval or you're in breach."
+    why_it_matters: "Strict guest clauses are enforceable in principle and can be used selectively; a 7-day cap over six months is tighter than typical (14+ days)."
+    suggested_ask: "Ask to extend the guest allowance (e.g. 14 consecutive days / 30 days per year) and require notice rather than approval."
+    jurisdiction_note: "No specific California statute governs guest-stay limits in private leases; courts weigh reasonableness. Worth asking about rather than assuming unenforceability."
+    source_url: "https://landlordtenant.dre.ca.gov/resources/guidebook/index.html"
+    verified: false
+
+  - id: ca-pet-deposit-nonrefundable
+    clause_type: pets
+    severity: caution
+    triggers:
+      - "pet deposit is non-?refundable"
+      - "retained by landlord upon move-?out regardless"
+    explanation: "The pet deposit is declared non-refundable."
+    why_it_matters: "All deposits securing performance — including pet deposits — fall under the security-deposit statute and must be refundable, within the overall one-month cap."
+    suggested_ask: "Ask for the pet deposit to be refundable and counted inside the §1950.5 deposit cap."
+    jurisdiction_note: "Cal. Civ. Code §1950.5(b) includes pet deposits in 'security'; §1950.5(m) bars labeling security as non-refundable."
+    source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1950.5"
+    verified: true
+
+  - id: ca-utilities-rubs
+    clause_type: utilities
+    severity: caution
+    triggers:
+      - "ratio utility billing"
+      - "rubs"
+      - "may adjust upon 30 days"
+    explanation: "Utilities are billed by formula (RUBS) and the landlord can adjust the charge."
+    why_it_matters: "RUBS charges aren't individually metered, can rise with occupancy, and effectively raise your true monthly cost; adjustability makes budgeting harder."
+    suggested_ask: "Ask for the utility charge to be fixed for the lease term, or for actual submetered billing."
+    jurisdiction_note: "California permits RUBS billing with proper disclosure; no statute caps it. Treat as a cost/negotiation item."
+    source_url: "https://landlordtenant.dre.ca.gov/resources/guidebook/index.html"
+    verified: false
+
+  - id: ca-joint-several
+    clause_type: joint_several_liability
+    severity: caution
+    triggers:
+      - "jointly and severally"
+    explanation: "Each roommate is on the hook for 100% of the rent, not just their share."
+    why_it_matters: "If a roommate leaves or doesn't pay, the landlord can pursue you for the full amount. Standard, but important to plan around."
+    suggested_ask: "No redline likely; agree in writing with roommates on shares and a departure plan."
+    jurisdiction_note: "Joint and several liability is standard and enforceable in California co-tenancies."
+    source_url: "https://landlordtenant.dre.ca.gov/resources/guidebook/index.html"
+    verified: false
+
+  - id: ca-liability-waiver
+    clause_type: liability_waiver
+    severity: high
+    triggers:
+      - "including landlord[''’]s own negligence"
+      - "releases landlord from any and all liability"
+      - "hold landlord harmless from all claims"
+    explanation: "You'd be waiving the right to hold the landlord responsible even for their own negligence."
+    why_it_matters: "California law voids residential lease clauses that exempt a landlord from liability for negligence or violations of law."
+    suggested_ask: "Ask to strike the waiver/indemnification clause, citing Civil Code §1953(a)(5)."
+    jurisdiction_note: "Cal. Civ. Code §1953(a): a lease provision waiving the tenant's right to recover for landlord negligence is void as contrary to public policy."
+    source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1953"
+    verified: true
+
+  - id: ca-attorneys-fees-onesided
+    clause_type: attorneys_fees
+    severity: caution
+    triggers:
+      - "without limitation"
+      - "tenant shall bear tenant[''’]s own fees"
+    explanation: "Attorney's fees flow only one way — to the landlord — with no cap."
+    why_it_matters: "California automatically makes one-sided fee clauses reciprocal, but an uncapped clause still raises the stakes of any dispute."
+    suggested_ask: "Ask to cap recoverable attorney's fees (e.g. $1,000) or make the clause expressly mutual."
+    jurisdiction_note: "Cal. Civ. Code §1717 makes unilateral attorney's-fee clauses reciprocal: whichever party prevails may recover."
+    source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1717"
+    verified: true
+
+  - id: ca-jury-waiver-arbitration
+    clause_type: arbitration
+    severity: high
+    triggers:
+      - "waives the right to a trial by jury"
+      - "binding arbitration"
+    explanation: "The lease routes disputes to arbitration and waives your jury-trial right."
+    why_it_matters: "A pre-dispute jury waiver in a California residential lease is void; mandatory arbitration of habitability claims is heavily restricted. You may be giving up less than the clause implies — but signing it invites a fight about it."
+    suggested_ask: "Ask to strike the jury waiver and make arbitration optional, citing Civil Code §1953(a)(4) and Grafton Partners v. Superior Court (2005)."
+    jurisdiction_note: "Cal. Civ. Code §1953(a)(4) voids lease waivers of the tenant's procedural rights; California also bars contractual pre-dispute jury waivers."
+    source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1953"
+    verified: true
+
+  - id: ca-moveout-fixed-cleaning
+    clause_type: moveout_charges
+    severity: high
+    triggers:
+      - "mandatory professional cleaning fee"
+      - "regardless of the condition"
+    safe_patterns:
+      - "actual costs with receipts"
+    explanation: "Fixed cleaning and carpet fees are deducted no matter how clean you leave the unit."
+    why_it_matters: "Deposit deductions must reflect what's reasonably necessary to return the unit to its move-in cleanliness; automatic flat fees regardless of condition are not allowed."
+    suggested_ask: "Ask to strike the fixed fees in favor of deductions for actual, documented cleaning costs under Civil Code §1950.5(e)."
+    jurisdiction_note: "Cal. Civ. Code §1950.5(e): deductions limited to what is reasonably necessary; AB 2801 (2024) further requires photo documentation of deductions."
+    source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1950.5"
+    verified: true
+
+  - id: ca-as-is-habitability
+    clause_type: as_is
+    severity: high
+    triggers:
+      - "as-?is"
+      - "waives any claim based on the condition"
+    explanation: "You'd accept the unit 'as-is' and waive habitability claims."
+    why_it_matters: "The implied warranty of habitability cannot be waived in California; an 'as-is' clause cannot override it, but it signals a landlord who may resist repairs."
+    suggested_ask: "Ask to strike the as-is/waiver language and attach a move-in condition checklist instead, citing Civil Code §1942.1."
+    jurisdiction_note: "Cal. Civ. Code §1942.1: habitability waivers are void; Green v. Superior Court (1974) established the non-waivable implied warranty."
+    source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1942.1"
+    verified: true
+
+defaults:
+  security_deposit:
+    severity: info
+    explanation: "Deposit terms follow the standard California pattern (one month, 21-day itemized return)."
+    why_it_matters: "Knowing the 21-day deadline helps you follow up promptly after move-out."
+    suggested_ask: "Request a joint move-in inspection with photos to protect the deposit."
+  nonrefundable_fees:
+    severity: info
+    explanation: "A modest one-time screening/administrative fee."
+    why_it_matters: "Application-type fees for actual costs are normal; watch that they stay one-time and documented."
+    suggested_ask: "Ask for a receipt itemizing what the fee covers."
+  early_termination:
+    severity: info
+    explanation: "Early move-out uses the standard mitigation approach: you owe rent until the unit re-rents."
+    why_it_matters: "This mirrors California's default rule and is about as tenant-friendly as lease-break terms get."
+    suggested_ask: null
+  rent_increase:
+    severity: info
+    explanation: "Renewal increases defer to applicable law (AB 1482 cap where covered)."
+    why_it_matters: "You can verify coverage and the current CPI-linked cap before renewal."
+    suggested_ask: null
+  late_fees:
+    severity: info
+    explanation: "A single modest late charge after a grace period."
+    why_it_matters: "This pattern tracks the 'reasonable estimate of costs' standard."
+    suggested_ask: null
+  maintenance_responsibility:
+    severity: info
+    explanation: "The landlord keeps habitability duties; you cover damage you cause."
+    why_it_matters: "This is the lawful California allocation."
+    suggested_ask: null
+  landlord_entry:
+    severity: info
+    explanation: "Entry requires 24-hour written notice during business hours."
+    why_it_matters: "Matches Civil Code §1954."
+    suggested_ask: null
+  subletting:
+    severity: caution
+    explanation: "Subletting needs the landlord's written consent."
+    why_it_matters: "Plan ahead if you may need a roommate or to leave early."
+    suggested_ask: "Ask whether consent would be unreasonably withheld for a qualified subtenant."
+  guest_limits:
+    severity: info
+    explanation: "Standard occupancy/guest language."
+    why_it_matters: "Keep stays within the stated windows to avoid disputes."
+    suggested_ask: null
+  pets:
+    severity: info
+    explanation: "Pets allowed with pet rent; deposit treated as refundable security."
+    why_it_matters: "Pet rent adds to true monthly cost — it's included in your cost breakdown."
+    suggested_ask: "Ask to waive or reduce pet rent — frequently negotiable."
+  utilities:
+    severity: info
+    explanation: "Standard utility responsibility terms."
+    why_it_matters: "Budget for utilities on top of rent."
+    suggested_ask: null
+  parking:
+    severity: info
+    explanation: "Parking is available for an added monthly fee."
+    why_it_matters: "Parking fees are part of your true monthly cost — and often negotiable."
+    suggested_ask: "Ask for the parking fee to be waived for the first term."
+  renters_insurance:
+    severity: info
+    explanation: "Renter's insurance with liability coverage is required."
+    why_it_matters: "Legal and common in California; policies typically run $15–25/month."
+    suggested_ask: null
+  joint_several_liability:
+    severity: caution
+    explanation: "Co-tenants are each liable for the full rent."
+    why_it_matters: "A departing roommate doesn't reduce what the landlord can collect from you."
+    suggested_ask: null
+  liability_waiver:
+    severity: caution
+    explanation: "Indemnification language present."
+    why_it_matters: "Scope matters; broad waivers of landlord negligence are void in California."
+    suggested_ask: "Ask to limit indemnification to claims arising from your own negligence."
+  attorneys_fees:
+    severity: info
+    explanation: "A mutual or capped attorney's-fees clause."
+    why_it_matters: "California law makes fee clauses reciprocal either way."
+    suggested_ask: null
+  arbitration:
+    severity: caution
+    explanation: "A dispute-resolution clause is present."
+    why_it_matters: "Check whether it waives jury trial or forces arbitration — both are restricted in California leases."
+    suggested_ask: null
+  mold_pest_disclosure:
+    severity: info
+    explanation: "Mold/pest disclosures are provided."
+    why_it_matters: "Required disclosures; keep copies with your lease."
+    suggested_ask: null
+  moveout_charges:
+    severity: info
+    explanation: "Move-out deductions limited to actual documented costs."
+    why_it_matters: "Matches the §1950.5 standard."
+    suggested_ask: null
+  as_is:
+    severity: caution
+    explanation: "Condition-of-premises language present."
+    why_it_matters: "Habitability can't be waived; document condition at move-in."
+    suggested_ask: "Attach a move-in condition checklist with photos."
+  other:
+    severity: info
+    explanation: "General lease provision."
+    why_it_matters: "No specific risk pattern detected."
+    suggested_ask: null

@@ -39,3 +39,4 @@ uploads/
 # Playwright
 test-results/
 playwright-report/
+public/pdf.worker.min.mjs

@@ -53,4 +53,24 @@ export const api = {
     request<RunSummary>(`/api/runs/${id}/resume`, { method: "POST", body: JSON.stringify(body) }),
   getListing: (id: string) => request<ListingDetail>(`/api/listings/${id}`),
   runEventsUrl: (id: string, after = 0) => `${API_URL}/api/runs/${id}/events?after=${after}`,
+  uploadLease: async (file: File, listingId?: string | null) => {
+    const form = new FormData();
+    form.append("file", file);
+    const query = listingId ? `?listing_id=${listingId}` : "";
+    const resp = await fetch(`${API_URL}/api/leases${query}`, { method: "POST", body: form });
+    if (!resp.ok) throw new ApiError(resp.status, await resp.text());
+    return resp.json();
+  },
+  analyzeSampleLease: async (key: string, listingId?: string | null) => {
+    const query = listingId ? `?listing_id=${listingId}` : "";
+    const resp = await fetch(`${API_URL}/api/leases/samples/${key}${query}`, { method: "POST" });
+    if (!resp.ok) throw new ApiError(resp.status, await resp.text());
+    return resp.json();
+  },
+  listSampleLeases: () =>
+    request<{ samples: Array<{ key: string; title: string; building_key: string }> }>(
+      "/api/leases/samples",
+    ),
+  getLease: (id: string) => request<unknown>(`/api/leases/${id}`),
+  leaseFileUrl: (id: string) => `${API_URL}/api/leases/${id}/file`,
 };
