@@ -31,6 +31,9 @@ def create_app() -> FastAPI:
         description="Multi-agent apartment & lease hunter.",
         lifespan=lifespan,
     )
+    from app.services.ratelimit import install_rate_limiter
+
+    install_rate_limiter(app, settings.rate_limit_per_minute)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,

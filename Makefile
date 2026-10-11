@@ -50,6 +50,9 @@ test-backend:
 test-web:
 	cd $(WEB) && npm run test -- --run
 
+test-e2e:
+	cd $(WEB) && npx playwright test
+
 lint:
 	cd $(BACKEND) && $(UV) run ruff check app tests && $(UV) run ruff format --check app tests
 	cd $(WEB) && npm run lint

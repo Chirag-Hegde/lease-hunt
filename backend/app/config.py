@@ -44,6 +44,9 @@ class Settings(BaseSettings):
     jwt_secret: str = "change-me-in-production"
     jwt_ttl_hours: int = 24 * 14
 
+    # Rate limiting
+    rate_limit_per_minute: int = 240
+
     # Uploads
     upload_dir: Path = DATA_DIR / "uploads"
     max_upload_bytes: int = 20 * 1024 * 1024
@@ -55,8 +58,12 @@ class Settings(BaseSettings):
     langfuse_public_key: str | None = None
     langfuse_secret_key: str | None = None
 
-    # CORS
-    cors_origins: list[str] = ["http://localhost:3000", "http://127.0.0.1:3000"]
+    # CORS (3100 = Playwright E2E frontend)
+    cors_origins: list[str] = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:3100",
+    ]
 
     @property
     def is_sqlite(self) -> bool:

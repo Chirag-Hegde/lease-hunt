@@ -128,8 +128,8 @@ async def analyze_lease(lease_id: str, state: Literal["california"] = "californi
         findings: list[LeaseFindingModel] = []
         for segment in parsed.segments:
             clause_type = await _classify(llm, segment)
-            if clause_type == "other" and segment.heading is None:
-                continue  # boilerplate paragraph
+            if clause_type == "other":
+                continue  # boilerplate (parties, term, signatures)
 
             rule = next((r for r in pack.rules_for(clause_type) if r.matches(segment.text)), None)
             default = pack.default_for(clause_type)

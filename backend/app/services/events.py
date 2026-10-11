@@ -11,6 +11,7 @@ from pydantic import BaseModel, Field
 
 from app.db import models
 from app.db.session import get_session_factory
+from app.services.redact import redact_payload
 
 EventType = Literal[
     "run_started",
@@ -53,7 +54,11 @@ class EventBus:
             self._seq[run_id] += 1
             seq = self._seq[run_id]
         event = RunEventModel(
-            run_id=run_id, seq=seq, type=type_, agent=agent, payload=payload or {}
+            run_id=run_id,
+            seq=seq,
+            type=type_,
+            agent=agent,
+            payload=redact_payload(payload or {}),
         )
 
         async with get_session_factory()() as session:
