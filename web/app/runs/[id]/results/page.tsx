@@ -44,6 +44,7 @@ export default function ResultsExplorerPage() {
         formula: string;
         isochrones?: IsochroneBand[];
         relax_suggestion?: string | null;
+        critic?: { approved: number; downgraded: number; rejected: number } | null;
       }
     | null
     | undefined;
@@ -128,6 +129,18 @@ export default function ResultsExplorerPage() {
             <ArrowLeft className="h-3 w-3" /> Mission Control
           </Link>
           <h1 className="text-3xl">Results Explorer</h1>
+          {report.critic && (
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              Critic verified {report.critic.approved} claims
+              {report.critic.rejected > 0 && (
+                <span className="text-severity-high">
+                  {" "}
+                  · removed {report.critic.rejected} unsupported
+                </span>
+              )}
+              {report.critic.downgraded > 0 && <> · downgraded {report.critic.downgraded}</>}
+            </p>
+          )}
         </div>
         <div className="flex flex-wrap items-center gap-2 text-sm">
           <label className="flex items-center gap-1.5">

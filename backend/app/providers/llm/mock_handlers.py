@@ -255,3 +255,43 @@ def assess_clause_risk(context: dict[str, Any]) -> BaseModel:
         suggested_ask=None,
         confidence=0.5,
     )
+
+
+@register_mock("critic_judge")
+def judge_claim_support(context: dict[str, Any]) -> BaseModel:
+    """Overlap-based verdict: the claim's content words must appear across the
+    evidence excerpts; 'recurring' claims need support in ≥2 excerpts."""
+    from app.agents.critic import STOPWORDS, ClaimVerdict
+
+    claim = str(context.get("claim", "")).lower()
+    excerpts = [str(e).lower() for e in context.get("excerpts", []) if str(e).strip()]
+    if not excerpts:
+        return ClaimVerdict(action="rejected", reason="no evidence excerpts provided")
+
+    # Theme synonyms so "pests complaints" matches "roaches" in evidence.
+    expansions = {
+        "pests": ["roach", "mice", "mouse", "pest", "rat"],
+        "noise": ["noise", "loud", "thin wall", "hear"],
+        "maintenance": ["maintenance", "repair", "broken", "work order", "elevator"],
+        "management": ["management", "office", "deposit", "fee", "increase", "corporate", "rude"],
+        "safety": ["break-in", "break in", "stolen", "gate", "unsafe", "lighting"],
+        "parking": ["parking", "tow", "spot"],
+        "package theft": ["package", "locker", "stolen"],
+        "water heat": ["hot water", "radiator", "heating", "water"],
+        "5-star": ["5 star", "five-star", "amazing", "best", "incredible", "flawless", "gift card"],
+    }
+    words = [w.strip(".,()!") for w in claim.split() if w.strip(".,()!") not in STOPWORDS]
+    terms = set(words)
+    for key, synonyms in expansions.items():
+        if key in claim:
+            terms.update(synonyms)
+
+    supporting = sum(1 for excerpt in excerpts if any(t and t in excerpt for t in terms))
+    needed = 2 if "recurring" in claim or "5-star" in claim else 1
+    if supporting >= needed:
+        return ClaimVerdict(action="approved", reason=f"{supporting} excerpt(s) support the claim")
+    if supporting == 1:
+        return ClaimVerdict(
+            action="downgraded", reason="only one excerpt supports a 'recurring' claim"
+        )
+    return ClaimVerdict(action="rejected", reason="no excerpt mentions the claimed issue")

@@ -28,18 +28,9 @@ from app.graph.state import ListingTask, RunState
 PerListingAgent = Callable[[RunContext, ListingModel], Awaitable[AgentResult[Any]]]
 PER_LISTING_AGENTS: dict[str, PerListingAgent] = {}
 
-# critic hook, installed in phase 7
-CriticFn = Callable[[RunContext, RunState], Awaitable[dict[str, Any] | None]]
-_critic_fn: CriticFn | None = None
-
 
 def register_per_listing_agent(name: str, fn: PerListingAgent) -> None:
     PER_LISTING_AGENTS[name] = fn
-
-
-def register_critic(fn: CriticFn) -> None:
-    global _critic_fn
-    _critic_fn = fn
 
 
 def _scout_output(state: RunState) -> ScoutOutput | None:
@@ -145,11 +136,49 @@ async def analyze_listing_node(task: ListingTask) -> dict[str, Any]:
 
 
 async def critic_node(state: RunState) -> dict[str, Any]:
-    if _critic_fn is None:
-        return {"critic": None}
+    from app.agents.contracts import CriticReport
+    from app.agents.critic import critic_agent
+    from app.db import models
+    from app.db.session import get_session_factory
+
     ctx = get_run_context(state["run_id"])
-    critic = await _critic_fn(ctx, state)
-    return {"critic": critic}
+    listing_results = state.get("listing_results") or {}
+    if not listing_results:
+        return {"critic": None}
+
+    outcome: dict[str, Any] = {}
+
+    async def _call() -> AgentResult[CriticReport]:
+        nonlocal outcome
+        outcome = await critic_agent(ctx, listing_results)
+        report = CriticReport.model_validate(outcome["report"])
+        return AgentResult[CriticReport](
+            agent="critic",
+            status="ok",
+            data=report,
+            confidence=0.9,
+            reason=None,
+        )
+
+    result = await run_agent(ctx, "critic", _call)
+    if result.status != "ok" or result.data is None:
+        return {"critic": None}
+
+    async with get_session_factory()() as session:
+        session.add(models.CriticReportRow(run_id=ctx.run_id, data=outcome["report"]))
+        await session.commit()
+
+    update: dict[str, Any] = {
+        "critic": {
+            "report": outcome["report"],
+            "verified_listing_ids": outcome["verified_listing_ids"],
+        }
+    }
+    if outcome["patched_results"]:
+        update["listing_results"] = outcome["patched_results"]
+        for listing_id, patched in outcome["patched_results"].items():
+            await ctx.persist_listing_results(listing_id, patched)
+    return update
 
 
 async def _isochrone_bands(ctx: RunContext) -> list[dict[str, Any]]:
