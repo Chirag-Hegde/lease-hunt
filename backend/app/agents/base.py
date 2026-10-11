@@ -11,6 +11,7 @@ from app.agents.contracts import AgentResult
 from app.config import get_settings
 from app.graph.context import RunContext
 from app.services.budget import BudgetExceededError
+from app.services.llm import UsageAccumulator, current_usage
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +33,8 @@ async def run_agent[T: BaseModel](
     await ctx.bus.publish(ctx.run_id, "agent_started", agent=agent, payload=payload)
 
     started = time.monotonic()
+    accumulator = UsageAccumulator()
+    usage_token = current_usage.set(accumulator)
     try:
         if ctx.budget.exceeded:
             result = AgentResult[T](
@@ -61,8 +64,16 @@ async def run_agent[T: BaseModel](
         logger.exception("agent %s failed", agent)
         result = AgentResult[T](agent=agent, status="error", reason=str(exc)[:500], confidence=0.0)
 
+    finally:
+        current_usage.reset(usage_token)
+
     if result.latency_ms == 0:
         result.latency_ms = int((time.monotonic() - started) * 1000)
+    # Attribute LLM usage made during this invocation to the envelope.
+    if result.tokens_in == 0 and result.tokens_out == 0:
+        result.tokens_in = accumulator.tokens_in
+        result.tokens_out = accumulator.tokens_out
+        result.cost_usd = accumulator.cost_usd
 
     finish_payload: dict[str, object] = {
         **payload,

@@ -2,7 +2,8 @@
 enforcement, and llm_calls logging. Agents never talk to providers directly."""
 
 import logging
-from dataclasses import dataclass
+from contextvars import ContextVar
+from dataclasses import dataclass, field
 from functools import lru_cache
 from typing import Any
 
@@ -19,6 +20,19 @@ from app.services.budget import BudgetTracker
 from app.services.prompts import load_prompt
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class UsageAccumulator:
+    """Collects LLM usage within one agent invocation (set by run_agent)."""
+
+    tokens_in: int = 0
+    tokens_out: int = 0
+    cost_usd: float = 0.0
+    calls: int = field(default=0)
+
+
+current_usage: ContextVar[UsageAccumulator | None] = ContextVar("current_usage", default=None)
 
 
 @dataclass
@@ -109,6 +123,13 @@ class LLMService:
         cost = (
             usage.tokens_in * spec.input_per_mtok + usage.tokens_out * spec.output_per_mtok
         ) / 1_000_000
+
+        accumulator = current_usage.get()
+        if accumulator is not None:
+            accumulator.tokens_in += usage.tokens_in
+            accumulator.tokens_out += usage.tokens_out
+            accumulator.cost_usd += cost
+            accumulator.calls += 1
 
         await self._record(
             agent, task, spec.model, prompt_def.version, usage_cost=cost, usage=usage
