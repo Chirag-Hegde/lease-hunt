@@ -1,0 +1,42 @@
+# Model routing: cheap/fast model for classification & extraction,
+# stronger model for lease risk reasoning, negotiation writing, critic judging.
+# Prices are USD per million tokens (input / output).
+
+routing:
+  brief_parse: fast
+  listing_extract: fast
+  review_theme_label: fast
+  relax_suggest: fast
+  clause_classify: fast
+  clause_risk: strong
+  negotiation_draft: strong
+  critic_judge: strong
+
+providers:
+  anthropic:
+    fast:
+      model: claude-haiku-5-5
+      input_per_mtok: 0.10
+      output_per_mtok: 0.50
+    strong:
+      model: claude-opus-5-5
+      input_per_mtok: 4.00
+      output_per_mtok: 20.00
+  openai:
+    fast:
+      model: gpt-4o-mini
+      input_per_mtok: 0.15
+      output_per_mtok: 0.60
+    strong:
+      model: gpt-4o
+      input_per_mtok: 2.50
+      output_per_mtok: 10.00
+  mock:
+    fast:
+      model: mock-fast
+      input_per_mtok: 0.05
+      output_per_mtok: 0.25
+    strong:
+      model: mock-strong
+      input_per_mtok: 2.00
+      output_per_mtok: 10.00
