@@ -3,6 +3,7 @@ from httpx import AsyncClient
 from app.agents.commute import commute_agent, place_score
 from app.agents.contracts import Fee, ListingModel, Place, SearchBriefInput
 from app.agents.price import price_agent, select_comps, total_monthly_cost
+from app.agents.review import review_agent
 from app.agents.scout import dedupe_listings
 from app.graph.context import create_run_context, release_run_context
 from app.seed.listings import generate_listings
@@ -142,3 +143,46 @@ async def test_price_agent_percentile(client: AsyncClient) -> None:
             assert len(result.evidence) >= 1
     finally:
         release_run_context("test-run-3")
+
+
+async def test_review_agent_themes_and_management_score(client: AsyncClient) -> None:
+    await seed()
+    ctx = create_run_context("test-run-4", "u1", "b1", _brief())
+    try:
+        listing = _listing(building_name="Marlow Commons")  # pests profile
+        result = await review_agent(ctx, listing)
+        assert result.status == "ok"
+        assert result.data is not None
+        insights = result.data
+        assert insights.review_count >= 3
+        assert any(t.theme == "pests" for t in insights.themes)
+        assert any("pests" in flag for flag in insights.red_flags)
+        assert 0 <= insights.management_score <= 100
+        assert len(result.evidence) > 0
+        assert all(e.source_url for e in result.evidence)
+    finally:
+        release_run_context("test-run-4")
+
+
+async def test_review_agent_detects_fake_burst(client: AsyncClient) -> None:
+    await seed()
+    ctx = create_run_context("test-run-5", "u1", "b1", _brief())
+    try:
+        listing = _listing(building_name="Aria at the Station")
+        result = await review_agent(ctx, listing)
+        assert result.status == "ok"
+        assert result.data is not None
+        assert result.data.fake_review_suspicion is True
+        assert result.data.fake_review_note
+        assert any("5-star" in flag for flag in result.data.red_flags)
+    finally:
+        release_run_context("test-run-5")
+
+
+async def test_review_agent_unavailable_for_no_building(client: AsyncClient) -> None:
+    ctx = create_run_context("test-run-6", "u1", "b1", _brief())
+    try:
+        result = await review_agent(ctx, _listing(building_name=None))
+        assert result.status == "unavailable"
+    finally:
+        release_run_context("test-run-6")

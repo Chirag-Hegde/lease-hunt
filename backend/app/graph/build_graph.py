@@ -230,6 +230,8 @@ def build_graph(checkpointer: Any) -> Any:
 # Imported here (bottom of module) to avoid circular imports.
 from app.agents.commute import commute_agent  # noqa: E402
 from app.agents.price import price_agent  # noqa: E402
+from app.agents.review import review_agent  # noqa: E402
 
 register_per_listing_agent("commute", commute_agent)
 register_per_listing_agent("price", price_agent)
+register_per_listing_agent("review", review_agent)

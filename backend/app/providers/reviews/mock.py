@@ -13,7 +13,15 @@ class MockReviewsProvider:
     async def fetch(
         self, building_key: str, building_name: str | None, session: AsyncSession
     ) -> list[ReviewDoc]:
-        stmt = select(models.ReviewSource).where(models.ReviewSource.building_key == building_key)
+        # Demo fixtures use short keys ("cedar-grove"); translate from the
+        # building name when the slugified key doesn't match directly.
+        from app.seed.buildings import BUILDINGS
+
+        keys = {building_key}
+        for building in BUILDINGS:
+            if building_name and building.name.lower() == building_name.lower():
+                keys.add(building.key)
+        stmt = select(models.ReviewSource).where(models.ReviewSource.building_key.in_(keys))
         rows = (await session.execute(stmt)).scalars().all()
         return [
             ReviewDoc(

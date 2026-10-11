@@ -8,10 +8,69 @@ holds the shared/basic ones.
 import re
 from typing import Any
 
+from pydantic import BaseModel
+
 from app.agents.contracts import Place, SearchBriefInput
 from app.providers.llm.mock import register_mock
 
 _KNOWN_CITIES = ["Sunnyvale", "Santa Clara", "Mountain View", "Cupertino", "San Jose"]
+
+_THEME_KEYWORDS: dict[str, list[str]] = {
+    "pests": ["roach", "cockroach", "mice", "mouse", "rat", "pest", "bed bug", "ants"],
+    "noise": ["noise", "thin wall", "loud", "hear my neighbor", "train horn", "freeway", "bowling"],
+    "maintenance": [
+        "work order",
+        "maintenance",
+        "broken",
+        "repair",
+        "elevator",
+        "dishwasher",
+        "ac died",
+    ],
+    "management": [
+        "management",
+        "office",
+        "lease renewal",
+        "deposit",
+        "corporate",
+        "rude",
+        "never answers",
+        "cleaning fee",
+        "increase",
+    ],
+    "safety": ["break-in", "break in", "stolen bike", "tailgated", "unsafe", "lighting", "safe"],
+    "parking": ["parking", "tow", "garage spot", "assigned spot", "guest spot"],
+    "package_theft": ["package", "amazon", "locker", "stolen package"],
+    "water_heat": ["hot water", "radiator", "heating", "water was shut", "windows leak", "heat"],
+}
+
+_POSITIVE_WORDS = [
+    "great",
+    "lovely",
+    "amazing",
+    "best",
+    "good",
+    "responsive",
+    "smooth",
+    "recommend",
+    "quiet",
+]
+_NEGATIVE_WORDS = [
+    "broken",
+    "stolen",
+    "roach",
+    "complain",
+    "rude",
+    "worst",
+    "unbelievable",
+    "never",
+    "problem",
+    "wild",
+    "joke",
+    "downhill",
+    "theft",
+    "unsafe",
+]
 
 
 @register_mock("brief_parse")
@@ -102,3 +161,29 @@ def parse_brief_from_text(context: dict[str, Any]) -> SearchBriefInput:
         parking_required="parking required" in lower,
         in_unit_laundry_required="in-unit laundry" in lower and "must" in lower,
     )
+
+
+@register_mock("review_theme_label")
+def label_review_cluster(context: dict[str, Any]) -> BaseModel:
+    """Keyword-vote theme labeling + lexicon/rating sentiment for a cluster."""
+    from app.agents.review import ClusterLabel
+
+    texts = [str(t).lower() for t in context.get("texts", [])]
+    joined = " ".join(texts)
+
+    votes = {
+        theme: sum(joined.count(kw) for kw in keywords)
+        for theme, keywords in _THEME_KEYWORDS.items()
+    }
+    theme = max(votes, key=lambda t: votes[t]) if any(votes.values()) else "management"
+
+    ratings = [r for r in context.get("ratings", []) if isinstance(r, int | float)]
+    positive = sum(joined.count(w) for w in _POSITIVE_WORDS)
+    negative = sum(joined.count(w) for w in _NEGATIVE_WORDS)
+    lexicon = (positive - negative) / max(positive + negative, 1)
+    if ratings:
+        rating_sentiment = (sum(ratings) / len(ratings) - 3.0) / 2.0
+        sentiment = 0.6 * rating_sentiment + 0.4 * lexicon
+    else:
+        sentiment = lexicon
+    return ClusterLabel(theme=theme, sentiment=round(max(-1.0, min(1.0, sentiment)), 2))
