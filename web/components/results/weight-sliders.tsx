@@ -17,7 +17,7 @@ export function WeightSliders({
   return (
     <div className="rounded-lg border bg-card p-4 shadow-soft">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium">Ranking weights</h3>
+        <h2 className="font-sans text-sm font-medium tracking-normal">Ranking weights</h2>
         <Button
           variant="ghost"
           size="sm"

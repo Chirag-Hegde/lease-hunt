@@ -53,3 +53,10 @@ export function scoreColor(score: number): string {
   if (score >= 55) return "hsl(var(--accent))";
   return "hsl(var(--destructive))";
 }
+
+// Darker variants for map pins: white 11px text needs ≥4.5:1 contrast.
+export function scorePinColor(score: number): string {
+  if (score >= 75) return "#0F766E"; // teal-700, 6.0:1 on white text
+  if (score >= 55) return "#A16207"; // amber-700, 5.0:1
+  return "#BE123C"; // rose-700, 5.9:1
+}

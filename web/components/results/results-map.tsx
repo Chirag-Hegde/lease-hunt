@@ -4,7 +4,7 @@ import maplibregl, { Map as MLMap, Marker } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef } from "react";
 
-import { scoreColor } from "@/lib/ranking";
+import { scorePinColor } from "@/lib/ranking";
 
 export type MapPin = {
   listingId: string;
@@ -134,7 +134,7 @@ export function ResultsMap({
       }
       const el = marker.getElement() as HTMLButtonElement;
       el.textContent = `$${(pin.rent / 1000).toFixed(1)}k`;
-      el.style.backgroundColor = scoreColor(pin.score);
+      el.style.backgroundColor = scorePinColor(pin.score);
       el.style.outline =
         selectedId === pin.listingId ? "3px solid hsl(var(--accent))" : "none";
       el.setAttribute("aria-label", `Listing at $${pin.rent} per month, score ${Math.round(pin.score)}`);

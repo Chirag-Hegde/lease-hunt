@@ -72,10 +72,20 @@ const config: Config = {
         shimmer: {
           "100%": { transform: "translateX(100%)" },
         },
+        bob: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-6px)" },
+        },
+        "pulse-line": {
+          "0%, 100%": { opacity: "0.3" },
+          "50%": { opacity: "1" },
+        },
       },
       animation: {
         "fade-up": "fade-up 0.4s ease-out both",
         shimmer: "shimmer 1.5s infinite",
+        bob: "bob 2.4s ease-in-out infinite",
+        "pulse-line": "pulse-line 2.4s ease-in-out infinite",
       },
     },
   },

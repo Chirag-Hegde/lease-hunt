@@ -50,9 +50,9 @@
     --border: 228 6% 19%;
     --input: 228 6% 19%;
     --ring: 172 66% 40%;
-    --severity-info: 215 16% 57%;
-    --severity-caution: 32 95% 54%;
-    --severity-high: 347 77% 58%;
+    --severity-info: 215 20% 68%;
+    --severity-caution: 35 95% 62%;
+    --severity-high: 347 90% 70%;
   }
 
   * {

@@ -121,6 +121,12 @@ Docker: `docker compose up` brings up api, worker (arq), web, Postgres 16 +
 pgvector, Redis, and Langfuse. Locally, demo mode needs none of them
 ([ADR-001](docs/decisions/ADR-001-sqlite-fallback-for-demo.md)).
 
+**Lighthouse** (production build, default mobile emulation):
+landing **96 / 100** (performance / accessibility), results explorer
+**92 / 100**. The results page server-renders run data (zero CLS), lazy-mounts
+MapLibre when its container nears the viewport (0 ms total blocking time),
+and ships CSS-only hero animations.
+
 ## Design decisions
 
 - [ADR-001 — SQLite/in-memory fallbacks for a zero-dependency demo](docs/decisions/ADR-001-sqlite-fallback-for-demo.md)

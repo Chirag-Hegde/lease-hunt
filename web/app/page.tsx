@@ -1,56 +1,32 @@
-"use client";
-
-import { motion } from "framer-motion";
 import {
-  ArrowRight,
   Banknote,
   Bike,
   FileSearch,
   MessageSquareQuote,
-  ScanSearch,
   Search,
   ShieldCheck,
 } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 
+import { LandingSearchBox } from "@/components/landing/search-box";
 import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { api } from "@/lib/api-client";
 
 const agents = [
   { name: "Scout", icon: Search, role: "Finds and dedupes listings that match your brief." },
   { name: "Commute", icon: Bike, role: "Scores drive, transit, bike & walk times to your places." },
-  { name: "Review", icon: MessageSquareQuote, role: "Mines reviews and Reddit for recurring building complaints." },
+  {
+    name: "Review",
+    icon: MessageSquareQuote,
+    role: "Mines reviews and Reddit for recurring building complaints.",
+  },
   { name: "Price", icon: Banknote, role: "Benchmarks rent against true comps and total cost." },
   { name: "Lease", icon: FileSearch, role: "Flags risky clauses in your lease with exact citations." },
   { name: "Critic", icon: ShieldCheck, role: "Verifies every claim has evidence before you see it." },
 ];
 
-const PLACEHOLDER =
-  "2b2b under $3,800 near Sunnyvale Caltrain, 20 min to Santa Clara, dog friendly";
-
 export default function LandingPage() {
-  const router = useRouter();
-  const [text, setText] = useState("");
-  const [busy, setBusy] = useState(false);
-
-  const start = async () => {
-    setBusy(true);
-    try {
-      const brief = await api.createBrief({ text: text.trim() || PLACEHOLDER });
-      const { run_id } = await api.createRun(brief.id);
-      router.push(`/runs/${run_id}`);
-    } catch {
-      setBusy(false);
-      router.push("/new");
-    }
-  };
-
   return (
     <div className="container flex flex-col gap-20 py-16">
-      {/* Hero */}
+      {/* Hero — server-rendered; animations are CSS-only (compositor friendly) */}
       <section className="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
         <Badge variant="secondary">Multi-agent apartment hunting</Badge>
         <h1 className="text-5xl leading-tight md:text-6xl">
@@ -62,52 +38,28 @@ export default function LandingPage() {
           evidence-backed negotiation draft — in minutes, every claim checked by a Critic agent.
         </p>
 
-        {/* Animated agent relay */}
+        {/* Agent relay */}
         <div className="flex items-center gap-1.5 py-2" aria-hidden>
           {agents.map((agent, i) => (
             <div key={agent.name} className="flex items-center gap-1.5">
-              <motion.div
-                className="flex h-10 w-10 items-center justify-center rounded-full border bg-card text-primary shadow-soft"
-                animate={{ y: [0, -6, 0] }}
-                transition={{ repeat: Infinity, duration: 2.4, delay: i * 0.35 }}
+              <div
+                className="flex h-10 w-10 animate-bob items-center justify-center rounded-full border bg-card text-primary shadow-soft"
+                style={{ animationDelay: `${i * 0.35}s` }}
                 title={agent.name}
               >
                 <agent.icon className="h-4 w-4" />
-              </motion.div>
+              </div>
               {i < agents.length - 1 && (
-                <motion.div
-                  className="h-px w-5 bg-border"
-                  animate={{ opacity: [0.3, 1, 0.3] }}
-                  transition={{ repeat: Infinity, duration: 2.4, delay: i * 0.35 + 0.15 }}
+                <div
+                  className="h-px w-5 animate-pulse-line bg-border"
+                  style={{ animationDelay: `${i * 0.35 + 0.15}s` }}
                 />
               )}
             </div>
           ))}
         </div>
 
-        <div className="flex w-full max-w-xl flex-col gap-3">
-          <div className="flex gap-2 rounded-lg border bg-card p-2 shadow-soft focus-within:ring-2 focus-within:ring-ring">
-            <input
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && !busy && start()}
-              placeholder={PLACEHOLDER}
-              aria-label="Describe your ideal apartment"
-              className="flex-1 bg-transparent px-2 text-sm focus:outline-none"
-            />
-            <Button onClick={start} disabled={busy}>
-              {busy ? "Dispatching…" : "Search"} <ArrowRight className="h-4 w-4" />
-            </Button>
-          </div>
-          <div className="flex justify-center gap-3 text-sm">
-            <Link href="/demo" className={buttonVariants({ variant: "outline", size: "sm" })}>
-              <ScanSearch className="h-3.5 w-3.5" /> Try the demo (Sunnyvale)
-            </Link>
-            <Link href="/new" className={buttonVariants({ variant: "ghost", size: "sm" })}>
-              or build a brief step by step
-            </Link>
-          </div>
-        </div>
+        <LandingSearchBox />
       </section>
 
       {/* Agents */}
@@ -115,18 +67,15 @@ export default function LandingPage() {
         <h2 className="text-center text-3xl">Six specialists, one shortlist</h2>
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {agents.map((agent, i) => (
-            <motion.div
+            <div
               key={agent.name}
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.05 }}
-              className="rounded-lg border bg-card p-5 shadow-soft"
+              className="animate-fade-up rounded-lg border bg-card p-5 shadow-soft"
+              style={{ animationDelay: `${i * 0.05}s` }}
             >
               <agent.icon className="h-5 w-5 text-primary" aria-hidden />
               <h3 className="mt-3 font-serif text-lg">{agent.name} Agent</h3>
               <p className="mt-1 text-sm text-muted-foreground">{agent.role}</p>
-            </motion.div>
+            </div>
           ))}
         </div>
       </section>
