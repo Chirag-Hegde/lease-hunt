@@ -102,7 +102,7 @@ async def _assess(
         clause_type=clause_type,
         text=segment.text[:2000],
         rule_context=str(rule_context or default_context or "none"),
-        max_tokens=1000,
+        max_tokens=3000,
     )
     return result.data
 

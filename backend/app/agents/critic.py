@@ -140,21 +140,31 @@ def _check_price_math(results: dict[str, Any]) -> tuple[bool, str]:
     return False, f"breakdown sums to ${recomputed:.2f}, not the stated ${total:.2f}"
 
 
-def _check_commute_math(results: dict[str, Any]) -> tuple[bool, str]:
+def _check_commute_math(
+    results: dict[str, Any], tolerances: dict[str, int] | None = None
+) -> tuple[bool, str]:
+    """Re-derive the overall score from the per-place estimates using the
+    brief's actual tolerances; it must match within rounding."""
     data = results["commute"]["data"]
     from app.agents.commute import place_score
 
     per_place = data.get("per_place", [])
     if not per_place:
         return False, "no per-place estimates behind the overall score"
-    # The formula uses brief tolerances; approximate with 30 min to bound drift.
+    tolerances = tolerances or {}
     total_weight = sum(p["weight"] for p in per_place) or 1.0
     recomputed = (
-        sum(place_score(p["best_peak_minutes"], 30) * p["weight"] for p in per_place) / total_weight
+        sum(
+            place_score(p["best_peak_minutes"], tolerances.get(p["place_label"], 30)) * p["weight"]
+            for p in per_place
+        )
+        / total_weight
     )
     stated = float(data.get("overall_score", 0))
-    if abs(recomputed - stated) <= 25.0:  # tolerance differences allowed
-        return True, "recomputed within tolerance of per-place estimates"
+    # Exact tolerances → tight band; unknown tolerances → generous band.
+    band = 2.0 if tolerances else 25.0
+    if abs(recomputed - stated) <= band:
+        return True, "recomputed from per-place estimates: matches the stated score"
     return False, f"overall score {stated} is far from recomputed {recomputed:.0f}"
 
 
@@ -170,7 +180,7 @@ async def _llm_judge(ctx: RunContext, claim: Claim) -> ClaimVerdict:
         },
         claim=claim.text,
         excerpts="\n".join(f"- {e}" for e in claim.evidence_excerpts) or "(none)",
-        max_tokens=400,
+        max_tokens=2000,
     )
     return result.data
 
@@ -180,6 +190,7 @@ async def critic_agent(
 ) -> dict[str, Any]:
     """Verify claims across all listings; mutate results in place (drop
     rejected red flags), return report + verified ids + cleaned results."""
+    tolerances = {p.label: p.tolerance_minutes for p in ctx.brief.important_places}
     reviews: list[ClaimReview] = []
     verified_ids: list[str] = []
     patched: dict[str, dict[str, Any]] = {}
@@ -195,7 +206,7 @@ async def critic_agent(
                 ok, reason = _check_price_math(results)
                 verdict = ClaimVerdict(action="approved" if ok else "rejected", reason=reason)
             elif claim.kind == "commute_math":
-                ok, reason = _check_commute_math(results)
+                ok, reason = _check_commute_math(results, tolerances)
                 verdict = ClaimVerdict(action="approved" if ok else "downgraded", reason=reason)
             else:
                 # Evidence-backed text claims: URL + excerpt must exist, then judge.

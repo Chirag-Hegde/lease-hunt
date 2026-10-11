@@ -185,7 +185,7 @@ async def draft_negotiations(
             rent=ctx.listing.rent,
             leverage="\n".join(f"- {p.text}" for p in points) or "- (none selected)",
             asks="\n".join(f"- {a.text}" for a in filtered_asks) or "- (none)",
-            max_tokens=1200,
+            max_tokens=4000,
         )
         drafts.append(
             NegotiationDraft(

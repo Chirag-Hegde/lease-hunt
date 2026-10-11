@@ -25,6 +25,14 @@ with the live streaming UI. Set `LLM_PROVIDER=anthropic` and
 risk reasoning, negotiation writing, and critic judging — see
 `backend/config/models.yaml`).
 
+Measured against the live Anthropic API (same seeded data): a full search run
+completes in **~24 s for ~$0.012** (12 Haiku theme labels + 2 Opus critic
+judgments), a 3-page problem lease analyzes in **~2.5 min for ~$0.20**
+(20 Haiku clause classifications + 17 Opus risk assessments), and three
+negotiation tone drafts take **~29 s**. Structured outputs are used where the
+schema fits; larger schemas (e.g. the search brief) automatically fall back
+to schema-in-prompt generation with client-side validation.
+
 ## Architecture
 
 ```mermaid

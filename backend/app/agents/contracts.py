@@ -78,6 +78,13 @@ class Place(BaseModel):
     arrival_time: str | None = "09:00"  # HH:MM, local
     tolerance_minutes: int = 30  # beyond this, the penalty curve steepens
 
+    @field_validator("modes")
+    @classmethod
+    def _default_modes_when_empty(cls, v: list[CommuteMode]) -> list[CommuteMode]:
+        # LLM brief parsing sometimes emits []; an unreachable place is never
+        # what the user meant.
+        return v or ["drive", "transit"]
+
 
 class SearchBriefInput(BaseModel):
     budget_min: int | None = None
