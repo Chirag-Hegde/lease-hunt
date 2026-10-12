@@ -11,7 +11,9 @@ import { api, type Place, type SearchBriefInput } from "@/lib/api-client";
 import { cn, formatUSD } from "@/lib/utils";
 
 const STEPS = ["Basics", "Places that matter", "Must-haves", "Review"] as const;
-const CITIES = ["Sunnyvale", "Santa Clara", "Mountain View", "Cupertino", "San Jose"];
+// Cities covered by the offline demo dataset — one-click suggestions only;
+// any US city can be typed (live via RentCast when a key is configured).
+const DEMO_CITIES = ["Sunnyvale", "Santa Clara", "Mountain View", "Cupertino", "San Jose"];
 const AMENITIES = [
   "in-unit laundry",
   "parking",
@@ -85,6 +87,18 @@ export default function BriefBuilderPage() {
   const [parsing, setParsing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [brief, setBrief] = useState<SearchBriefInput>(defaultBrief);
+  const [cityDraft, setCityDraft] = useState("");
+
+  const addCity = (value: string) => {
+    const city = value.trim().replace(/,+$/, "");
+    if (!city) return;
+    setBrief((prev) => {
+      const cities = prev.cities ?? [];
+      if (cities.some((c) => c.toLowerCase() === city.toLowerCase())) return prev;
+      return { ...prev, cities: [...cities, city] };
+    });
+    setCityDraft("");
+  };
 
   // Live NL parse (debounced) — "type a sentence, see it parsed into fields".
   useEffect(() => {
@@ -250,25 +264,44 @@ export default function BriefBuilderPage() {
             </div>
             <div>
               <p className="text-sm font-medium">Cities</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {CITIES.map((city) => {
-                  const active = (brief.cities ?? []).includes(city);
-                  return (
-                    <Chip
-                      key={city}
-                      active={active}
-                      onClick={() =>
-                        update({
-                          cities: active
-                            ? (brief.cities ?? []).filter((c) => c !== city)
-                            : [...(brief.cities ?? []), city],
-                        })
-                      }
-                    >
-                      {city}
-                    </Chip>
-                  );
-                })}
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                {(brief.cities ?? []).map((city) => (
+                  <Chip
+                    key={city}
+                    active
+                    onClick={() =>
+                      update({ cities: (brief.cities ?? []).filter((c) => c !== city) })
+                    }
+                  >
+                    {city} ✕
+                  </Chip>
+                ))}
+                <input
+                  value={cityDraft}
+                  onChange={(e) => setCityDraft(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === ",") {
+                      e.preventDefault();
+                      addCity(cityDraft);
+                    }
+                  }}
+                  onBlur={() => addCity(cityDraft)}
+                  placeholder='Add any US city — e.g. "Austin, TX"'
+                  aria-label="Add a city"
+                  className="w-56 rounded-md border bg-background p-2 text-sm"
+                />
+              </div>
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <span className="text-xs text-muted-foreground">Demo data covers:</span>
+                {DEMO_CITIES.filter((c) => !(brief.cities ?? []).includes(c)).map((city) => (
+                  <Chip
+                    key={city}
+                    active={false}
+                    onClick={() => update({ cities: [...(brief.cities ?? []), city] })}
+                  >
+                    {city}
+                  </Chip>
+                ))}
               </div>
             </div>
             <label className="block text-sm font-medium">
