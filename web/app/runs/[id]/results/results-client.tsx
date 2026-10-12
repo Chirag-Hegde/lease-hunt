@@ -77,6 +77,8 @@ export function ResultsExplorerClient({
         formula: string;
         isochrones?: IsochroneBand[];
         relax_suggestion?: string | null;
+        scout_status?: string | null;
+        scout_reason?: string | null;
         critic?: { approved: number; downgraded: number; rejected: number } | null;
       }
     | null
@@ -277,6 +279,19 @@ export function ResultsExplorerClient({
           <p className="text-sm text-muted-foreground" aria-live="polite">
             {reranked.length} listings, ranked by your weights
           </p>
+          {reranked.length === 0 && (
+            <div className="rounded-lg border bg-card p-6 text-sm">
+              <p className="font-medium">No listings found for this search.</p>
+              <p className="mt-1.5 text-muted-foreground">
+                {report.scout_reason ??
+                  report.relax_suggestion ??
+                  "Try widening the budget or adding nearby cities."}
+              </p>
+              <Link href="/" className="mt-3 inline-block text-primary underline">
+                Start a new search
+              </Link>
+            </div>
+          )}
           <AnimatePresence initial={false}>
             {reranked.map((entry) => (
               <motion.div

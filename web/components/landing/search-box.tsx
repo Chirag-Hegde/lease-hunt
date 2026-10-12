@@ -32,6 +32,7 @@ export function LandingSearchBox() {
     <div className="flex w-full max-w-xl flex-col gap-3">
       <div className="flex gap-2 rounded-lg border bg-card p-2 shadow-soft focus-within:ring-2 focus-within:ring-ring">
         <input
+          autoFocus
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && !busy && start()}

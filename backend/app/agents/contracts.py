@@ -100,7 +100,10 @@ class SearchBriefInput(BaseModel):
     must_haves: list[str] = Field(default_factory=list)
     nice_to_haves: list[str] = Field(default_factory=list)
     deal_breakers: list[str] = Field(default_factory=list)
-    cities: list[str] = Field(default_factory=list)
+    cities: list[str] = Field(
+        default_factory=list,
+        description='US cities to search, each as "City" or "City, ST" when a state is known',
+    )
     important_places: list[Place] = Field(default_factory=list)
     max_listings: int = 20
 

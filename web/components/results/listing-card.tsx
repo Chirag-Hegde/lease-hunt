@@ -46,9 +46,10 @@ export function ListingCard({
         selected && "ring-2 ring-accent",
       )}
     >
-      <div className="hidden h-28 w-36 shrink-0 overflow-hidden rounded-md sm:block">
-        {photo && !imgFailed ? (
-          // eslint-disable-next-line @next/next/no-img-element
+      {/* Photos only when the listing source provides them — no stock stand-ins. */}
+      {photo && !imgFailed && (
+        <div className="hidden h-28 w-36 shrink-0 overflow-hidden rounded-md sm:block">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={photo}
             alt=""
@@ -56,13 +57,8 @@ export function ListingCard({
             className="h-full w-full object-cover"
             onError={() => setImgFailed(true)}
           />
-        ) : (
-          <div
-            aria-hidden
-            className="h-full w-full bg-gradient-to-br from-primary/20 via-secondary to-accent/20"
-          />
-        )}
-      </div>
+        </div>
+      )}
 
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-3">

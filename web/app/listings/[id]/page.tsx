@@ -112,20 +112,10 @@ export default function ListingDetailPage() {
 
   return (
     <div className="container max-w-5xl py-8">
-      {/* Gallery */}
-      <div className="grid h-72 grid-cols-3 gap-2 overflow-hidden rounded-lg">
-        {(listing.photos ?? []).slice(0, 3).map((photo, i) =>
-          heroFailed ? (
-            <div
-              key={i}
-              aria-hidden
-              className={cn(
-                "h-full w-full bg-gradient-to-br",
-                i === 0 && "col-span-2 row-span-2 from-primary/25 via-secondary to-accent/20",
-                i > 0 && "from-accent/15 via-muted to-primary/15",
-              )}
-            />
-          ) : (
+      {/* Gallery — only photos the listing source actually provides. */}
+      {(listing.photos ?? []).length > 0 && !heroFailed && (
+        <div className="grid h-72 grid-cols-3 gap-2 overflow-hidden rounded-lg">
+          {(listing.photos ?? []).slice(0, 3).map((photo, i) => (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               key={i}
@@ -134,9 +124,9 @@ export default function ListingDetailPage() {
               onError={() => setHeroFailed(true)}
               className={cn("h-full w-full object-cover", i === 0 && "col-span-2 row-span-2")}
             />
-          ),
-        )}
-      </div>
+          ))}
+        </div>
+      )}
 
       <div className="mt-6 flex flex-wrap items-start justify-between gap-4">
         <div>

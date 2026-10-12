@@ -19,8 +19,11 @@ make demo     # installs deps, seeds data, precomputes a run, starts api (:8000)
 
 Demo mode runs **fully offline**: deterministic mock LLM + data providers,
 SQLite, in-memory cache. A full run on demo data finishes in **under 5 seconds**
-with the live streaming UI. Set `LLM_PROVIDER=anthropic` and
-`ANTHROPIC_API_KEY` in `backend/.env` for real model calls (model routing:
+with the live streaming UI. The offline dataset covers five Bay Area cities;
+set `RENTCAST_API_KEY` in `backend/.env` (rentcast.io, free tier) for **live
+US-wide listing search**. Listing photos are shown only when the listing
+source provides them — never stock placeholders. Set `LLM_PROVIDER=anthropic`
+and `ANTHROPIC_API_KEY` in `backend/.env` for real model calls (model routing:
 `claude-haiku-5-5` for extraction/classification, `claude-opus-5-5` for lease
 risk reasoning, negotiation writing, and critic judging — see
 `backend/config/models.yaml`).

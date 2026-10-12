@@ -1,10 +1,11 @@
 """Mock listings provider: reads the 150 seeded demo listings from the DB."""
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agents.contracts import ListingModel, SearchBriefInput
 from app.db import models
+from app.providers.listings.rentcast import split_city_state
 from app.services.mappers import listing_row_to_model
 
 
@@ -20,6 +21,8 @@ class MockListingsProvider:
         if brief.budget_min:
             stmt = stmt.where(models.Listing.rent >= brief.budget_min)
         if brief.cities:
-            stmt = stmt.where(models.Listing.city.in_(brief.cities))
+            # Brief cities may arrive as "City, ST" — match on the city part.
+            wanted = [split_city_state(c)[0].lower() for c in brief.cities]
+            stmt = stmt.where(func.lower(models.Listing.city).in_(wanted))
         rows = (await session.execute(stmt)).scalars().all()
         return [listing_row_to_model(row) for row in rows]

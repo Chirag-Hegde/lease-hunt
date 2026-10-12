@@ -188,7 +188,9 @@ def generate_listings() -> list[ListingModel]:
             baths=baths,
             sqft=sqft,
             amenities=sorted(amenities),
-            photos=[f"https://picsum.photos/seed/leaselens-{lid}-{k}/640/420" for k in range(3)],
+            # No stock placeholders: photos only ever come from the listing
+            # source itself, so demo listings honestly have none.
+            photos=[],
             available_date=available.date().isoformat(),
             landlord=manager,
             building_name=building_name,

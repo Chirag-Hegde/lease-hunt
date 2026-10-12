@@ -6,6 +6,7 @@ from sqlalchemy import select
 
 from app.agents.contracts import (
     AgentResult,
+    AgentStatus,
     Evidence,
     ListingModel,
     ScoutMatch,
@@ -15,6 +16,7 @@ from app.agents.contracts import (
 from app.db import models
 from app.db.session import get_session_factory
 from app.graph.context import RunContext
+from app.providers.listings.rentcast import split_city_state
 from app.services.geo import haversine_m, normalize_address
 from app.services.llm import LLMService
 from app.services.mappers import listing_model_to_row
@@ -233,12 +235,37 @@ async def scout_agent(ctx: RunContext) -> AgentResult[ScoutOutput]:
         )
         for m in matches[:20]
     ]
-    status = "ok" if matches else "partial"
+    status: AgentStatus = "ok" if matches else "partial"
+    reason = None if matches else "no listings matched the brief"
+    if not matches and ctx.listings.name == "mock" and brief.cities:
+        # Honest coverage: the offline demo dataset only spans a few CA cities.
+        async with get_session_factory()() as session:
+            city_rows = (
+                (
+                    await session.execute(
+                        select(models.Listing.city)
+                        .where(models.Listing.source == "demo")
+                        .distinct()
+                    )
+                )
+                .scalars()
+                .all()
+            )
+        demo_cities = sorted(c for c in city_rows if c is not None)
+        covered = {c.lower() for c in demo_cities}
+        wanted = {split_city_state(c)[0].lower() for c in brief.cities}
+        if not (wanted & covered):
+            status = "unavailable"
+            reason = (
+                f"No listing source covers {', '.join(brief.cities)} — demo data includes "
+                f"only {', '.join(demo_cities)} (CA). Set RENTCAST_API_KEY in backend/.env "
+                "for live US-wide listings."
+            )
     return AgentResult[ScoutOutput](
         agent="scout",
         status=status,
         data=output,
         evidence=evidence,
         confidence=0.95 if matches else 0.4,
-        reason=None if matches else "no listings matched the brief",
+        reason=reason,
     )

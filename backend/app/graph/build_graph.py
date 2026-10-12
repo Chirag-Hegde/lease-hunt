@@ -222,6 +222,9 @@ async def rank_node(state: RunState) -> dict[str, Any]:
         "formula": FORMULA,
         "critic": critic.get("report") if critic else None,
         "relax_suggestion": output.relax_suggestion if output else None,
+        # Surfaced in the Results empty state (e.g. demo-data city coverage).
+        "scout_status": (state.get("scout") or {}).get("status"),
+        "scout_reason": (state.get("scout") or {}).get("reason"),
         "budget_exceeded": ctx.budget.exceeded,
         "isochrones": await _isochrone_bands(ctx),
         "match_explanations": {

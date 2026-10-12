@@ -5,7 +5,9 @@ from app.providers.listings.rentcast import RentCastProvider
 
 
 def get_listings_provider() -> ListingsProvider:
+    # A RentCast key activates live US-wide search even in demo mode,
+    # mirroring the LLM provider hybrid (mock everything else, real listings).
     settings = get_settings()
-    if not settings.demo_mode and settings.rentcast_api_key:
+    if settings.rentcast_api_key:
         return RentCastProvider(settings.rentcast_api_key)
     return MockListingsProvider()
