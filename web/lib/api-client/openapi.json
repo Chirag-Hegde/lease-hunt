@@ -1,7 +1,7 @@
 {
  "openapi": "3.1.0",
  "info": {
-  "title": "LeaseLens API",
+  "title": "Lease Hunt API",
   "description": "Multi-agent apartment & lease hunter.",
   "version": "0.1.0"
  },

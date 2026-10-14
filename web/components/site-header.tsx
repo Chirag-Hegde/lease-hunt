@@ -23,7 +23,7 @@ export function SiteHeader() {
       <div className="container flex h-14 items-center justify-between">
         <Link href="/" className="flex items-center gap-2 font-serif text-lg">
           <ScanSearch className="h-5 w-5 text-primary" aria-hidden />
-          LeaseLens
+          Lease Hunt
         </Link>
         <nav className="flex items-center gap-1">
           {nav.map((item) => (

@@ -12,7 +12,7 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: { default: "LeaseLens", template: "%s · LeaseLens" },
+  title: { default: "Lease Hunt", template: "%s · Lease Hunt" },
   description:
     "Your apartment hunt, handled by a team of AI agents — listings, commutes, reviews, lease red flags, and negotiation drafts with evidence.",
 };

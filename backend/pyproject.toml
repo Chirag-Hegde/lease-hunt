@@ -1,7 +1,7 @@
 [project]
-name = "leaselens-backend"
+name = "leasehunt-backend"
 version = "0.1.0"
-description = "LeaseLens API: multi-agent apartment & lease hunter"
+description = "Lease Hunt API: multi-agent apartment & lease hunter"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115",

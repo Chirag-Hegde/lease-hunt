@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     demo_mode: bool = True
 
     # Database: SQLite file by default so the demo runs with zero services.
-    database_url: str = f"sqlite+aiosqlite:///{DATA_DIR}/leaselens.sqlite3"
+    database_url: str = f"sqlite+aiosqlite:///{DATA_DIR}/leasehunt.sqlite3"
 
     # Cache / queue: in-memory fallbacks when unset.
     redis_url: str | None = None

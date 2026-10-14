@@ -1,4 +1,4 @@
-"""LeaseLens API entrypoint."""
+"""Lease Hunt API entrypoint."""
 
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
@@ -26,7 +26,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 def create_app() -> FastAPI:
     settings = get_settings()
     app = FastAPI(
-        title="LeaseLens API",
+        title="Lease Hunt API",
         version="0.1.0",
         description="Multi-agent apartment & lease hunter.",
         lifespan=lifespan,

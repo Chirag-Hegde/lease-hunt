@@ -1,19 +1,19 @@
-name: leaselens
+name: leasehunt
 
 services:
   postgres:
     image: pgvector/pgvector:pg16
     environment:
-      POSTGRES_USER: leaselens
-      POSTGRES_PASSWORD: leaselens
-      POSTGRES_DB: leaselens
+      POSTGRES_USER: leasehunt
+      POSTGRES_PASSWORD: leasehunt
+      POSTGRES_DB: leasehunt
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./docker/postgres-init:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U leaselens"]
+      test: ["CMD-SHELL", "pg_isready -U leasehunt"]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -34,7 +34,7 @@ services:
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
     environment: &backend_env
       DEMO_MODE: ${DEMO_MODE:-true}
-      DATABASE_URL: postgresql+asyncpg://leaselens:leaselens@postgres:5432/leaselens
+      DATABASE_URL: postgresql+asyncpg://leasehunt:leasehunt@postgres:5432/leasehunt
       REDIS_URL: redis://redis:6379/0
       LLM_PROVIDER: ${LLM_PROVIDER:-mock}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
@@ -75,7 +75,7 @@ services:
   langfuse:
     image: langfuse/langfuse:2
     environment:
-      DATABASE_URL: postgresql://leaselens:leaselens@postgres:5432/langfuse
+      DATABASE_URL: postgresql://leasehunt:leasehunt@postgres:5432/langfuse
       NEXTAUTH_SECRET: langfuse-secret
       NEXTAUTH_URL: http://localhost:3001
       SALT: langfuse-salt

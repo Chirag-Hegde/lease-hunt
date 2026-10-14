@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.providers.reviews.base import ReviewDoc
 
 _SUBREDDITS = ["bayarea", "SanJose", "sunnyvale", "SantaClara"]
-_USER_AGENT = "LeaseLens/0.1 (building review research)"
+_USER_AGENT = "Lease Hunt/0.1 (building review research)"
 
 
 class RedditProvider:

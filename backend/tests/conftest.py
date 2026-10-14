@@ -8,7 +8,7 @@ from httpx import ASGITransport, AsyncClient
 
 def pytest_configure(config: pytest.Config) -> None:
     # Each test session gets its own SQLite DB and runs fully offline.
-    tmp = Path(os.environ.get("PYTEST_TMPDIR", "/tmp")) / f"leaselens-test-{os.getpid()}"
+    tmp = Path(os.environ.get("PYTEST_TMPDIR", "/tmp")) / f"leasehunt-test-{os.getpid()}"
     tmp.mkdir(parents=True, exist_ok=True)
     os.environ["DEMO_MODE"] = "true"
     os.environ["LLM_PROVIDER"] = "mock"

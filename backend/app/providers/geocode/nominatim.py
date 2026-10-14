@@ -4,7 +4,7 @@ import asyncio
 
 import httpx
 
-_USER_AGENT = "LeaseLens/0.1 (apartment search demo)"
+_USER_AGENT = "Lease Hunt/0.1 (apartment search demo)"
 
 
 class NominatimGeocoder:

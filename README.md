@@ -1,8 +1,8 @@
-# LeaseLens
+# Lease Hunt
 
 > Your apartment hunt, handled by a team of AI agents.
 
-LeaseLens is a multi-agent system (**LangGraph + FastAPI + Next.js**) that scouts
+Lease Hunt is a multi-agent system (**LangGraph + FastAPI + Next.js**) that scouts
 listings, scores commutes, mines reviews for building red flags, analyzes lease
 PDFs clause-by-clause with exact citations, benchmarks price against comps, and
 drafts an evidence-backed negotiation email — with a **Critic agent** that
@@ -13,7 +13,7 @@ verifies every claim against its evidence before it reaches you.
 ## Quickstart — zero API keys
 
 ```bash
-git clone https://github.com/Chirag-Hegde/leaselens && cd leaselens
+git clone https://github.com/Chirag-Hegde/lease-hunt && cd leasehunt
 make demo     # installs deps, seeds data, precomputes a run, starts api (:8000) + web (:3000)
 ```
 
@@ -277,7 +277,7 @@ risks, and verified evidence a single agent structurally cannot — and the
 ## Project structure
 
 ```
-leaselens/
+leasehunt/
 ├── backend/
 │   ├── app/
 │   │   ├── agents/        # scout, commute, review, price, lease, negotiator,

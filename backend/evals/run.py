@@ -34,7 +34,7 @@ async def _run_suites(which: str) -> list[SuiteResult]:
 
 def _to_markdown(results: list[SuiteResult]) -> str:
     lines = [
-        "# LeaseLens eval report",
+        "# Lease Hunt eval report",
         "",
         f"Generated {datetime.now(UTC).isoformat(timespec='seconds')} · DEMO_MODE (deterministic mock providers)",
         "",
@@ -86,7 +86,7 @@ def _ci_gate(results: list[SuiteResult]) -> int:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="LeaseLens eval suite")
+    parser = argparse.ArgumentParser(description="Lease Hunt eval suite")
     parser.add_argument("--suite", default="all", choices=["all", "lease", "critic", "ranking"])
     parser.add_argument("--ci", action="store_true", help="enforce the F1 regression gate")
     args = parser.parse_args()

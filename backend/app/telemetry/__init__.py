@@ -17,9 +17,9 @@ logger = logging.getLogger(__name__)
 
 @lru_cache
 def _tracer() -> trace.Tracer:
-    provider = TracerProvider(resource=Resource.create({"service.name": "leaselens-api"}))
+    provider = TracerProvider(resource=Resource.create({"service.name": "leasehunt-api"}))
     trace.set_tracer_provider(provider)
-    return trace.get_tracer("leaselens")
+    return trace.get_tracer("leasehunt")
 
 
 @lru_cache

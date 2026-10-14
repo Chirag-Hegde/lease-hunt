@@ -15,7 +15,7 @@ from app.db import models
 from app.db.session import get_db
 from app.services.auth import verify_session_token
 
-DEMO_USER_EMAIL = "demo@leaselens.dev"
+DEMO_USER_EMAIL = "demo@leasehunt.dev"
 
 DbSession = Annotated[AsyncSession, Depends(get_db)]
 

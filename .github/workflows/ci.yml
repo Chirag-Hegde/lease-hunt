@@ -100,6 +100,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build backend image
-        run: docker build -t leaselens-api ./backend
+        run: docker build -t leasehunt-api ./backend
       - name: Build web image
-        run: docker build -t leaselens-web ./web
+        run: docker build -t leasehunt-web ./web

@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* LeaseLens design tokens — calm, editorial, trustworthy.
+/* Lease Hunt design tokens — calm, editorial, trustworthy.
    Palette from the spec: warm off-white, deep teal primary, amber accent. */
 @layer base {
   :root {

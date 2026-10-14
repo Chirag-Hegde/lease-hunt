@@ -12,7 +12,7 @@ BASELINE_PATH = Path(__file__).resolve().parent / "baselines.json"
 
 def setup_eval_env() -> None:
     """Isolated SQLite DB + mock providers so evals are deterministic."""
-    tmp = Path(tempfile.mkdtemp(prefix="leaselens-evals-"))
+    tmp = Path(tempfile.mkdtemp(prefix="leasehunt-evals-"))
     os.environ["DEMO_MODE"] = "true"
     os.environ["LLM_PROVIDER"] = "mock"
     # Hermetic: a developer's backend/.env (real keys) must not leak into

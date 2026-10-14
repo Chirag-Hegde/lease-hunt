@@ -15,7 +15,7 @@ from app.seed.listings import generate_listings
 from app.seed.reviews import generate_reviews
 from app.services.mappers import listing_model_to_row
 
-DEMO_USER_EMAIL = "demo@leaselens.dev"
+DEMO_USER_EMAIL = "demo@leasehunt.dev"
 
 
 async def seed() -> None:

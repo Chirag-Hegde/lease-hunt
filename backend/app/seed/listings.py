@@ -176,7 +176,7 @@ def generate_listings() -> list[ListingModel]:
         return ListingModel(
             id=lid,
             source="demo",
-            url=f"https://demo.leaselens.dev/listings/{lid}",
+            url=f"https://demo.leasehunt.dev/listings/{lid}",
             address=address,
             city=city,
             lat=round(lat, 5),
@@ -236,7 +236,7 @@ def generate_listings() -> list[ListingModel]:
     dupe = dupe_src.model_copy(deep=True)
     dupe.id = "demo9999"
     dupe.source = "demo"
-    dupe.url = "https://demo.leaselens.dev/listings/demo9999"
+    dupe.url = "https://demo.leasehunt.dev/listings/demo9999"
     dupe.address = dupe_src.address.replace("Unit ", "#").replace(", CA", ", CA 94086")
     dupe.rent = dupe_src.rent + 10
     listings.append(dupe)

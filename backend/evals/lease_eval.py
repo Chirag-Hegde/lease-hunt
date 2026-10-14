@@ -33,11 +33,11 @@ async def run_lease_eval() -> SuiteResult:
         async with factory() as session:
             user = (
                 await session.execute(
-                    select(models.User).where(models.User.email == "evals@leaselens.dev")
+                    select(models.User).where(models.User.email == "evals@leasehunt.dev")
                 )
             ).scalar_one_or_none()
             if user is None:
-                user = models.User(email="evals@leaselens.dev")
+                user = models.User(email="evals@leasehunt.dev")
                 session.add(user)
                 await session.flush()
             lease = models.Lease(
